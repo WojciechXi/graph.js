@@ -1,0 +1,431 @@
+{
+    "id": "bf5a4f4d-4035-4964-9244-5837262aae15",
+    "graphClasses": [],
+    "graphFunctions": [
+        {
+            "id": "d011d12e-03b7-41a0-9166-1f9a73befd0b",
+            "name": "Function",
+            "graph": {
+                "id": "c3d6e2ae-5022-4a8e-b111-be01c189ebbb",
+                "triggerInputs": [],
+                "triggerOutputs": [],
+                "dataInputs": [],
+                "dataOutputs": [],
+                "nodes": [
+                    {
+                        "type": "GraphNodeBreak",
+                        "id": "b3a8e6bf-4744-4442-8d48-2ae10711eeda",
+                        "x": 417,
+                        "y": 75,
+                        "triggerInputs": [
+                            {
+                                "id": "f7c0b7f3-0927-403c-af37-35476645410d",
+                                "name": "enter",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ],
+                        "triggerOutputs": [],
+                        "dataInputs": [],
+                        "dataOutputs": []
+                    },
+                    {
+                        "type": "GraphNodeEnter",
+                        "id": "7c0f2eaa-763e-451e-a23c-0e49f7d65b2b",
+                        "x": -313,
+                        "y": -216,
+                        "triggerInputs": [],
+                        "triggerOutputs": [],
+                        "dataInputs": [],
+                        "dataOutputs": []
+                    },
+                    {
+                        "type": "GraphNodeExit",
+                        "id": "2dfcb161-bdff-426d-872f-105442dfe9b9",
+                        "x": 595,
+                        "y": -197,
+                        "triggerInputs": [],
+                        "triggerOutputs": [],
+                        "dataInputs": [],
+                        "dataOutputs": []
+                    },
+                    {
+                        "type": "GraphNodeIf",
+                        "id": "5eae43c1-73e3-430b-8062-7325eb463d5d",
+                        "x": 381,
+                        "y": -135,
+                        "triggerInputs": [
+                            {
+                                "id": "65bf504d-adc8-4b89-8578-13a0e6efb151",
+                                "name": "enter",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ],
+                        "triggerOutputs": [
+                            {
+                                "id": "19f9d3e1-b410-4a54-a72d-61c9c1e6335c",
+                                "name": "true",
+                                "type": "mixed",
+                                "value": ""
+                            },
+                            {
+                                "id": "f965d44f-7d91-4402-8a40-59c0388e3a59",
+                                "name": "false",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ],
+                        "dataInputs": [
+                            {
+                                "id": "1f363389-3aa0-4888-8c42-130397d1105c",
+                                "name": "predicate",
+                                "type": "bool",
+                                "value": false
+                            }
+                        ],
+                        "dataOutputs": []
+                    },
+                    {
+                        "type": "GraphNodeSwitch",
+                        "id": "5be2e886-1256-4884-a02a-58d0b5a97ef3",
+                        "x": 800,
+                        "y": 0,
+                        "triggerInputs": [
+                            {
+                                "id": "2955fa53-5708-4166-b7a3-dae7f9eaed1c",
+                                "name": "enter",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ],
+                        "triggerOutputs": [],
+                        "dataInputs": [],
+                        "dataOutputs": []
+                    },
+                    {
+                        "type": "GraphNodeFor",
+                        "id": "993c60d0-72a1-44ac-9455-1e794221ed54",
+                        "x": 784,
+                        "y": -173,
+                        "triggerInputs": [
+                            {
+                                "id": "75238783-f848-414a-953b-8af04c451ee9",
+                                "name": "enter",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ],
+                        "triggerOutputs": [
+                            {
+                                "id": "faef7290-eadc-473d-97a5-c0436105bc0e",
+                                "name": "exit",
+                                "type": "mixed",
+                                "value": ""
+                            },
+                            {
+                                "id": "d0bb443f-f28c-4720-9d60-077e74a41d17",
+                                "name": "body",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ],
+                        "dataInputs": [
+                            {
+                                "id": "a051c32d-b6c7-4d60-9de6-34e9ece1f1df",
+                                "name": "first",
+                                "type": "int",
+                                "value": 0
+                            },
+                            {
+                                "id": "334904de-3de0-47c9-8968-1bdeae00de5e",
+                                "name": "last",
+                                "type": "int",
+                                "value": 10
+                            },
+                            {
+                                "id": "f547598c-9459-4a23-b522-1178b7f5e806",
+                                "name": "step",
+                                "type": "int",
+                                "value": 1
+                            }
+                        ],
+                        "dataOutputs": [
+                            {
+                                "id": "981d989f-4a80-4aed-aea6-e122ad9097e3",
+                                "name": "index",
+                                "type": "int",
+                                "value": ""
+                            }
+                        ]
+                    },
+                    {
+                        "type": "GraphNodeForEach",
+                        "id": "7606891a-7763-4a88-b337-757a93e9a52f",
+                        "x": 931,
+                        "y": -148,
+                        "triggerInputs": [
+                            {
+                                "id": "ec66db59-562a-4a4a-aad2-3fd8a189e9eb",
+                                "name": "enter",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ],
+                        "triggerOutputs": [
+                            {
+                                "id": "78948849-bb9a-4b5e-989a-e2f2919bd92f",
+                                "name": "exit",
+                                "type": "mixed",
+                                "value": ""
+                            },
+                            {
+                                "id": "f16fb11d-fed0-4506-bc67-1f4c75ff3e13",
+                                "name": "body",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ],
+                        "dataInputs": [
+                            {
+                                "id": "d9dfbf55-ad69-404a-abe2-f22543b1c9e8",
+                                "name": "target",
+                                "type": "object",
+                                "value": ""
+                            }
+                        ],
+                        "dataOutputs": [
+                            {
+                                "id": "e08abb40-af18-4c44-9dbe-960405fc7f3a",
+                                "name": "item",
+                                "type": "mixed",
+                                "value": ""
+                            },
+                            {
+                                "id": "3e5efc3c-8673-4cf0-b15e-a2fb63a942c6",
+                                "name": "index",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ]
+                    },
+                    {
+                        "type": "GraphNodeWhile",
+                        "id": "fdbc33f7-82d4-4eb9-82c3-559d5cda010b",
+                        "x": 1047,
+                        "y": 31,
+                        "triggerInputs": [
+                            {
+                                "id": "4ea5288b-2e53-46b5-be62-b451230ae796",
+                                "name": "enter",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ],
+                        "triggerOutputs": [
+                            {
+                                "id": "c42e972d-d142-4b74-b63f-d385b8a0bbee",
+                                "name": "exit",
+                                "type": "mixed",
+                                "value": ""
+                            },
+                            {
+                                "id": "8ee42af5-49fa-4e42-bf84-5a0dadc7edd5",
+                                "name": "body",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ],
+                        "dataInputs": [
+                            {
+                                "id": "462b37c5-3d24-4cf5-bede-d55ad5b2a802",
+                                "name": "predicate",
+                                "type": "bool",
+                                "value": false
+                            }
+                        ],
+                        "dataOutputs": []
+                    },
+                    {
+                        "type": "GraphNodeThis",
+                        "id": "4c45c15d-6e00-424e-b2fb-47a68e8c6c07",
+                        "x": -360,
+                        "y": -101,
+                        "triggerInputs": [],
+                        "triggerOutputs": [],
+                        "dataInputs": [],
+                        "dataOutputs": [
+                            {
+                                "id": "9e90e598-8446-42c8-9fa0-04a17743311b",
+                                "name": "this",
+                                "type": "object",
+                                "value": ""
+                            }
+                        ]
+                    },
+                    {
+                        "type": "GraphNodeGet",
+                        "id": "b1114c6a-4227-4bff-814c-c5a0502c55a0",
+                        "x": -67,
+                        "y": -18,
+                        "triggerInputs": [],
+                        "triggerOutputs": [],
+                        "dataInputs": [
+                            {
+                                "id": "1d85dab4-2cc4-4bc5-abff-97a18f45e0bf",
+                                "name": "target",
+                                "type": "object",
+                                "value": ""
+                            },
+                            {
+                                "id": "dd7df409-ba4d-40b6-a629-bd362ced13a4",
+                                "name": "member",
+                                "type": "string",
+                                "value": "variable"
+                            }
+                        ],
+                        "dataOutputs": [
+                            {
+                                "id": "533c1bc8-6f6f-442b-9f9f-9252d7e2b389",
+                                "name": "value",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ]
+                    },
+                    {
+                        "type": "GraphNodeSet",
+                        "id": "c2bd1fb1-7b91-4a3a-beb9-52395cdbe4fe",
+                        "x": 156,
+                        "y": -133,
+                        "triggerInputs": [
+                            {
+                                "id": "c56c01a8-7f30-4c1b-9650-34364efab993",
+                                "name": "enter",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ],
+                        "triggerOutputs": [
+                            {
+                                "id": "438a6e4e-536d-4677-9cd4-b556dbfc3d21",
+                                "name": "exit",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ],
+                        "dataInputs": [
+                            {
+                                "id": "b8912ad5-492a-47b4-b553-1c035c96ae9f",
+                                "name": "target",
+                                "type": "object",
+                                "value": ""
+                            },
+                            {
+                                "id": "ccfd0557-cd0f-405a-b19b-db1f01be4dca",
+                                "name": "member",
+                                "type": "string",
+                                "value": "variable"
+                            },
+                            {
+                                "id": "cd35c1e3-84c2-4a3d-86dc-80c540770bde",
+                                "name": "new value",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ],
+                        "dataOutputs": [
+                            {
+                                "id": "23f1c741-4651-4b6b-93d7-fa15ffed3e81",
+                                "name": "value",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ]
+                    },
+                    {
+                        "type": "GraphNodeFunction",
+                        "id": "76ca6c24-3a6a-4d07-abc8-b3801b57fd24",
+                        "x": 400,
+                        "y": 200,
+                        "triggerInputs": [],
+                        "triggerOutputs": [],
+                        "dataInputs": [
+                            {
+                                "id": "a5b3f593-1169-41f7-ba1f-0ba928c054a3",
+                                "name": "function",
+                                "type": "object",
+                                "value": ""
+                            }
+                        ],
+                        "dataOutputs": [
+                            {
+                                "id": "310dc404-49d1-4883-94cf-4a2132459448",
+                                "name": "exit",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ]
+                    },
+                    {
+                        "type": "GraphNodeMethod",
+                        "id": "cffc52bb-0fce-498e-8020-618ca17c319d",
+                        "x": 600,
+                        "y": 200,
+                        "triggerInputs": [],
+                        "triggerOutputs": [],
+                        "dataInputs": [
+                            {
+                                "id": "53f586b5-5611-462b-a01d-328009b2b699",
+                                "name": "target",
+                                "type": "object",
+                                "value": ""
+                            },
+                            {
+                                "id": "2ea52aa5-b1c9-4c2b-9571-30d255e9166b",
+                                "name": "method",
+                                "type": "object",
+                                "value": ""
+                            }
+                        ],
+                        "dataOutputs": [
+                            {
+                                "id": "60bf990f-7197-4b79-a556-b2d71fa8119e",
+                                "name": "exit",
+                                "type": "mixed",
+                                "value": ""
+                            }
+                        ]
+                    }
+                ],
+                "connections": [
+                    {
+                        "id": "a23a32c4-6f5d-4b55-892e-05fd41829440",
+                        "inputId": "533c1bc8-6f6f-442b-9f9f-9252d7e2b389",
+                        "outputId": "cd35c1e3-84c2-4a3d-86dc-80c540770bde"
+                    },
+                    {
+                        "id": "adbfb7b3-8f73-4208-8ac6-23db6565ab28",
+                        "inputId": "9e90e598-8446-42c8-9fa0-04a17743311b",
+                        "outputId": "1d85dab4-2cc4-4bc5-abff-97a18f45e0bf"
+                    },
+                    {
+                        "id": "8c042407-9226-4afa-b99b-8d06dded8cf6",
+                        "inputId": "9e90e598-8446-42c8-9fa0-04a17743311b",
+                        "outputId": "b8912ad5-492a-47b4-b553-1c035c96ae9f"
+                    },
+                    {
+                        "id": "17171c9a-ed4f-420d-865a-dbf5b3f181f1",
+                        "inputId": "438a6e4e-536d-4677-9cd4-b556dbfc3d21",
+                        "outputId": "65bf504d-adc8-4b89-8578-13a0e6efb151"
+                    },
+                    {
+                        "id": "bcf7067e-633b-491f-af9a-33d2984a6ec1",
+                        "inputId": "23f1c741-4651-4b6b-93d7-fa15ffed3e81",
+                        "outputId": "1f363389-3aa0-4888-8c42-130397d1105c"
+                    }
+                ]
+            }
+        }
+    ]
+}
