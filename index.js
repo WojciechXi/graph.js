@@ -1,4 +1,18 @@
 window.addEventListener('load', function (event) {
+    window.textfield = null;
+    window.addEventListener('keydown', function (event) {
+        if (window.textfield) {
+            if (event.key == 'Backspace') {
+                window.textfield.text = window.textfield.text.substr(0, window.textfield.text.length - 1);
+            } else if (event.key == 'Enter') {
+                window.textfield = null;
+            } else {
+                window.textfield.text += event.key;
+            }
+            event.preventDefault();
+        }
+    });
+
     let xhr = new XMLHttpRequest();
     xhr.open('GET', 'data.json', true);
     xhr.onload = function (event) {

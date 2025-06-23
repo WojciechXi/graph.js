@@ -15,6 +15,9 @@ class Canvas {
 
     Clear() {
         let object = this;
+        object.canvas.width = object.canvas.clientWidth;
+        object.canvas.height = object.canvas.clientHeight;
+
         object.context.clearRect(0, 0, object.canvas.width, object.canvas.height);
         object.context.font = "12px Arial";
 
