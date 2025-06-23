@@ -87,10 +87,6 @@ class GraphNode {
         };
     }
 
-    GetCode(graph) {
-        return ``;
-    }
-
     get RoundRect() {
         let object = this;
         return object.roundRect ?? (object.roundRect = new RoundRect());
@@ -268,36 +264,6 @@ class GraphNodeEnter extends GraphNode {
         }
     }
 
-    GetCode(graph) {
-        let object = this;
-        let parts = [];
-        object.DataOutputs.forEach(function (dataOutput) {
-            parts.push(`\tobject.${dataOutput.name} = data.${dataOutput.name};`);
-        });
-
-        object.TriggerOutputs.forEach(function (triggerOutput) {
-            graph.connections.forEach(function (connection) {
-                if (triggerOutput.id == connection.inputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.outputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                } else if (triggerOutput.id == connection.outputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.inputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                }
-            });
-        });
-
-        return parts.join(`\n`)
-    }
-
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -360,32 +326,6 @@ class GraphNodeReturn extends GraphNode {
         }
     }
 
-    GetCode(graph) {
-        let object = this;
-
-        let inputs = {};
-
-        object.DataInputs.forEach(function (dataInput) {
-            object.graph.FindConnections(dataInput.id).forEach(function (connection) {
-                if (dataInput.id == connection.inputId) {
-                    let graphVariable = object.graph.FindGraphVariable(connection.outputId);
-                    inputs[dataInput.name] = graphVariable.graphNode.GetCode(graph);
-                } else if (dataInput.id == connection.outputId) {
-                    let graphVariable = object.graph.FindGraphVariable(connection.inputId);
-                    inputs[dataInput.name] = graphVariable.graphNode.GetCode(graph);
-                }
-            });
-        });
-
-        let parts = [];
-        parts.push(`return {`);
-        Object.keys(inputs).forEach(function (key) {
-            parts.push(`${key}: ${inputs[key]},`);
-        });
-        parts.push(`}`);
-        return parts.join(`\n`)
-    }
-
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -418,10 +358,6 @@ class GraphNodeBreak extends GraphNode {
         super(data);
         let object = this;
         if (!object.triggerInputs.length) object.triggerInputs = [new GraphTrigger({ name: 'enter' })];
-    }
-
-    GetCode(graph) {
-        return `break;`;
     }
 
     toJson() {
@@ -458,76 +394,6 @@ class GraphNodeIf extends GraphNode {
         if (!object.dataInputs.length) object.dataInputs = [
             new GraphVariable({ name: 'predicate', type: 'bool', value: false }),
         ];
-    }
-
-    GetCode(graph) {
-        let object = this;
-
-        let predicate = 'true';
-
-        object.DataInputs.forEach(function (dataInput) {
-            if (dataInput.name == 'predicate') {
-                object.graph.FindConnections(dataInput.id).forEach(function (connection) {
-                    if (dataInput.id == connection.inputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.outputId);
-                        predicate = graphVariable.graphNode.GetCode(graph);
-                    } else if (dataInput.id == connection.outputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.inputId);
-                        predicate = graphVariable.graphNode.GetCode(graph);
-                    }
-                });
-            }
-        });
-
-        let parts = [];
-        parts.push(`if( ${predicate} ) {`);
-
-        object.TriggerOutputs.forEach(function (triggerOutput) {
-            if (triggerOutput.name != 'true') return;
-            graph.connections.forEach(function (connection) {
-                if (triggerOutput.id == connection.inputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.outputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                } else if (triggerOutput.id == connection.outputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.inputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                }
-            });
-        });
-
-        parts.push(`} else {`);
-
-        object.TriggerOutputs.forEach(function (triggerOutput) {
-            if (triggerOutput.name != 'false') return;
-            graph.connections.forEach(function (connection) {
-                if (triggerOutput.id == connection.inputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.outputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                } else if (triggerOutput.id == connection.outputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.inputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                }
-            });
-        });
-
-        parts.push(`}`);
-        return parts.join(`\n`);
     }
 
     toJson() {
@@ -571,15 +437,6 @@ class GraphNodeSwitch extends GraphNode {
         ];
     }
 
-    GetCode(graph) {
-        let object = this;
-        let parts = [];
-        parts.push(`switch('name') {`);
-
-        parts.push(`}`);
-        return parts.join(`\n`);
-    }
-
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -619,58 +476,6 @@ class GraphNodeFor extends GraphNode {
         if (!object.dataOutputs.length) object.dataOutputs = [
             new GraphVariable({ name: 'index', direction: 'output', type: 'int' }),
         ];
-    }
-
-    GetCode(graph) {
-        let object = this;
-        let parts = [];
-        parts.push(`for(let i = 0; i < 10; i++) {`);
-
-        object.TriggerOutputs.forEach(function (triggerOutput) {
-            if (triggerOutput.name != 'body') return;
-            graph.connections.forEach(function (connection) {
-                if (triggerOutput.id == connection.inputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.outputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                } else if (triggerOutput.id == connection.outputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.inputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                }
-            });
-        });
-
-        parts.push(`}`);
-
-        object.TriggerOutputs.forEach(function (triggerOutput) {
-            if (triggerOutput.name != 'exit') return;
-            graph.connections.forEach(function (connection) {
-                if (triggerOutput.id == connection.inputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.outputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                } else if (triggerOutput.id == connection.outputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.inputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                }
-            });
-        });
-
-        return parts.join(`\n`);
     }
 
     toJson() {
@@ -731,15 +536,6 @@ class GraphNodeForEach extends GraphNode {
         ];
     }
 
-    GetCode(graph) {
-        let object = this;
-        let parts = [];
-        parts.push(`target.forEach(function(item, index){`);
-
-        parts.push(`});`);
-        return parts.join(`\n`);
-    }
-
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -794,58 +590,6 @@ class GraphNodeWhile extends GraphNode {
         ];
     }
 
-    GetCode(graph) {
-        let object = this;
-        let parts = [];
-        parts.push(`while( false ) {`);
-
-        object.TriggerOutputs.forEach(function (triggerOutput) {
-            if (triggerOutput.name != 'body') return;
-            graph.connections.forEach(function (connection) {
-                if (triggerOutput.id == connection.inputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.outputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                } else if (triggerOutput.id == connection.outputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.inputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                }
-            });
-        });
-
-        parts.push(`}`);
-
-        object.TriggerOutputs.forEach(function (triggerOutput) {
-            if (triggerOutput.name != 'exit') return;
-            graph.connections.forEach(function (connection) {
-                if (triggerOutput.id == connection.inputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.outputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                } else if (triggerOutput.id == connection.outputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.inputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                }
-            });
-        });
-
-        return parts.join(`\n`);
-    }
-
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -887,11 +631,6 @@ class GraphNodeThis extends GraphNode {
         ];
     }
 
-    GetCode(graph) {
-        let object = this;
-        return 'object';
-    }
-
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -923,39 +662,6 @@ class GraphNodeGet extends GraphNode {
         if (!object.dataOutputs.length) object.dataOutputs = [
             new GraphVariable({ name: 'value', direction: 'output', type: 'mixed' }),
         ];
-    }
-
-    GetCode(graph) {
-        let object = this;
-
-        let target = 'null';
-        let member = 'null';
-
-        object.DataInputs.forEach(function (dataInput) {
-            if (dataInput.name == 'target') {
-                object.graph.FindConnections(dataInput.id).forEach(function (connection) {
-                    if (dataInput.id == connection.inputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.outputId);
-                        target = graphVariable.graphNode.GetCode(graph);
-                    } else if (dataInput.id == connection.outputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.inputId);
-                        target = graphVariable.graphNode.GetCode(graph);
-                    }
-                });
-            } else if (dataInput.name == 'member') {
-                object.graph.FindConnections(dataInput.id).forEach(function (connection) {
-                    if (dataInput.id == connection.inputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.outputId);
-                        member = graphVariable.name;
-                    } else if (dataInput.id == connection.outputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.inputId);
-                        member = graphVariable.name;
-                    }
-                });
-            }
-        });
-
-        return `${target}.${member}`;
     }
 
     toJson() {
@@ -1002,76 +708,6 @@ class GraphNodeSet extends GraphNode {
         if (!object.dataOutputs.length) object.dataOutputs = [
             new GraphVariable({ name: 'value', direction: 'output', type: 'mixed' }),
         ];
-    }
-
-    GetCode(graph) {
-        let object = this;
-
-        let target = 'null';
-        let member = 'null';
-
-        let newValue = 'null';
-
-        object.DataInputs.forEach(function (dataInput) {
-            if (dataInput.name == 'target') {
-                object.graph.FindConnections(dataInput.id).forEach(function (connection) {
-                    if (dataInput.id == connection.inputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.outputId);
-                        target = graphVariable.graphNode.GetCode(graph);
-                    } else if (dataInput.id == connection.outputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.inputId);
-                        target = graphVariable.graphNode.GetCode(graph);
-                    }
-                });
-            } else if (dataInput.name == 'member') {
-                object.graph.FindConnections(dataInput.id).forEach(function (connection) {
-                    if (dataInput.id == connection.inputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.outputId);
-                        member = graphVariable.name;
-                    } else if (dataInput.id == connection.outputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.inputId);
-                        member = graphVariable.name;
-                    }
-                });
-            } else if (dataInput.name == 'new value') {
-                object.graph.FindConnections(dataInput.id).forEach(function (connection) {
-                    if (dataInput.id == connection.inputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.outputId);
-                        newValue = graphVariable.graphNode.GetCode(graph);
-                    } else if (dataInput.id == connection.outputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.inputId);
-                        newValue = graphVariable.graphNode.GetCode(graph);
-                    }
-                });
-            }
-        });
-
-        let parts = [];
-
-        parts.push(`${target}.${member} = ${newValue};`);
-
-        object.TriggerOutputs.forEach(function (triggerOutput) {
-            if (triggerOutput.name != 'exit') return;
-            graph.connections.forEach(function (connection) {
-                if (triggerOutput.id == connection.inputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.outputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                } else if (triggerOutput.id == connection.outputId) {
-                    graph.nodes.forEach(function (node) {
-                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
-                            if (triggerInput.id != connection.inputId) return;
-                            parts.push(node.GetCode(graph));
-                        });
-                    });
-                }
-            });
-        });
-
-        return parts.join(`\n`);
     }
 
     toJson() {
@@ -1124,12 +760,6 @@ class GraphNodeFunction extends GraphNode {
         ];
     }
 
-    GetCode(graph) {
-        let object = this;
-        let parts = [];
-        return parts.join(`\n`);
-    }
-
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -1169,12 +799,6 @@ class GraphNodeMethod extends GraphNode {
         if (!object.dataOutputs.length) object.dataOutputs = [
             new GraphTrigger({ name: 'exit', direction: 'output', }),
         ];
-    }
-
-    GetCode(graph) {
-        let object = this;
-        let parts = [];
-        return parts.join(`\n`);
     }
 
     toJson() {
@@ -1226,39 +850,6 @@ class GraphNodeEquals extends GraphNode {
         if (!object.dataOutputs.length) object.dataOutputs = [
             new GraphVariable({ name: 'equals', direction: 'output', type: 'bool', value: false }),
         ];
-    }
-
-    GetCode(graph) {
-        let object = this;
-
-        let a = 'null';
-        let b = 'null';
-
-        object.DataInputs.forEach(function (dataInput) {
-            if (dataInput.name == 'a') {
-                object.graph.FindConnections(dataInput.id).forEach(function (connection) {
-                    if (dataInput.id == connection.inputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.outputId);
-                        a = graphVariable.graphNode.GetCode(graph);
-                    } else if (dataInput.id == connection.outputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.inputId);
-                        a = graphVariable.graphNode.GetCode(graph);
-                    }
-                });
-            } else if (dataInput.name == 'b') {
-                object.graph.FindConnections(dataInput.id).forEach(function (connection) {
-                    if (dataInput.id == connection.inputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.outputId);
-                        b = graphVariable.graphNode.GetCode(graph);
-                    } else if (dataInput.id == connection.outputId) {
-                        let graphVariable = object.graph.FindGraphVariable(connection.inputId);
-                        b = graphVariable.graphNode.GetCode(graph);
-                    }
-                });
-            }
-        });
-
-        return `${a} == ${b}`;
     }
 
     toJson() {
@@ -1323,11 +914,6 @@ class GraphNodeString extends GraphNode {
     get ValueText() {
         let object = this;
         return object.valueText ?? (object.valueText = new Text({ text: object.value }));
-    }
-
-    GetCode(graph) {
-        let object = this;
-        return `'${object.value}'`;
     }
 
     Resize(canvas) {
