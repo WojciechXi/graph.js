@@ -30,6 +30,15 @@ class GraphVariable {
         }));
     }
 
+    get Text() {
+        let object = this;
+        return object.text ?? (object.text = new Text({
+            text: object.name,
+            x: object.x,
+            y: object.y,
+        }));
+    }
+
     Update(canvas, pointer) {
         let object = this;
         object.hover = object.Arc.Update(canvas, pointer);
@@ -40,6 +49,9 @@ class GraphVariable {
         object.Arc.x = node.x + (offset.x ?? 0);
         object.Arc.y = node.y + (offset.y ?? 0);
 
+        object.Text.x = object.Arc.x + 16;
+        object.Text.y = object.Arc.y + 8;
+
         object.x = object.Arc.x;
         object.y = object.Arc.y;
     }
@@ -47,6 +59,7 @@ class GraphVariable {
     Draw(canvas, offset = {}) {
         let object = this;
         object.Arc.Draw(canvas, offset);
+        object.Text.Draw(canvas, offset);
     }
 
     get Code() {

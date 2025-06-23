@@ -32,6 +32,15 @@ class GraphTrigger {
         }));
     }
 
+    get Text() {
+        let object = this;
+        return object.text ?? (object.text = new Text({
+            text: object.name,
+            x: object.x,
+            y: object.y,
+        }));
+    }
+
     Update(canvas, pointer) {
         let object = this;
         object.hover = object.Rect.Update(canvas, pointer);
@@ -42,6 +51,9 @@ class GraphTrigger {
         object.Rect.x = node.x + (offset.x ?? 0);
         object.Rect.y = node.y + (offset.y ?? 0);
 
+        object.Text.x = object.Rect.x + 16;
+        object.Text.y = object.Rect.y + 8;
+
         object.x = object.Rect.x;
         object.y = object.Rect.y;
     }
@@ -49,6 +61,7 @@ class GraphTrigger {
     Draw(canvas, offset = {}) {
         let object = this;
         object.Rect.Draw(canvas, offset);
+        object.Text.Draw(canvas, offset);
     }
 
     get Code() {
