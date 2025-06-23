@@ -1,5 +1,33 @@
 class Graph {
 
+    static FromJson(data = {}) {
+        data.triggerInputs.forEach(function (graphTrigger, index) {
+            data.triggerInputs[index] = GraphTrigger.FromJson(graphTrigger);
+        });
+
+        data.triggerOutputs.forEach(function (graphTrigger, index) {
+            data.triggerOutputs[index] = GraphTrigger.FromJson(graphTrigger);
+        });
+
+        data.dataInputs.forEach(function (graphVariable, index) {
+            data.dataInputs[index] = GraphVariable.FromJson(graphVariable);
+        });
+
+        data.dataOutputs.forEach(function (graphVariable, index) {
+            data.dataOutputs[index] = GraphVariable.FromJson(graphVariable);
+        });
+
+        data.nodes.forEach(function (graphNode, index) {
+            data.nodes[index] = GraphNode.FromJson(graphNode);
+        });
+
+        data.connections.forEach(function (graphConnection, index) {
+            data.connections[index] = GraphConnection.FromJson(graphConnection);
+        });
+
+        return new Graph(data);
+    }
+
     constructor(data = {}) {
         let object = this;
         object.id = guid();
@@ -12,8 +40,6 @@ class Graph {
 
         object.nodes = data.nodes ?? [];
         object.connections = data.connections ?? [];
-
-        object.line = null;
     }
 
     toJson() {

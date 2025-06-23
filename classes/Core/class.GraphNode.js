@@ -2,11 +2,32 @@ class GraphNode {
 
     static {
         GraphNode.nodes = [];
+        GraphNode.types = {};
+    }
+
+    static FromJson(data = {}) {
+        data.triggerInputs.forEach(function (triggerInput, index) {
+            data.triggerInputs[index] = GraphTrigger.FromJson(triggerInput);
+        });
+
+        data.triggerOutputs.forEach(function (triggerOutput, index) {
+            data.triggerOutputs[index] = GraphTrigger.FromJson(triggerOutput);
+        });
+
+        data.dataInputs.forEach(function (dataInput, index) {
+            data.dataInputs[index] = GraphVariable.FromJson(dataInput);
+        });
+
+        data.dataOutputs.forEach(function (dataOutput, index) {
+            data.dataOutputs[index] = GraphVariable.FromJson(dataOutput);
+        });
+
+        return new (GraphNode.types[data.type])(data);
     }
 
     constructor(data = {}) {
         let object = this;
-        object.id = guid();
+        object.id = data.id ?? guid();
         object.x = data.x ?? 0;
         object.y = data.y ?? 0;
 
@@ -141,6 +162,7 @@ class GraphNodeBreak extends GraphNode {
 
     static {
         GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
     }
 
     constructor(data = {}) {
@@ -157,6 +179,7 @@ class GraphNodeEnter extends GraphNode {
 
     static {
         GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
     }
 
     constructor(data = {}) {
@@ -170,6 +193,7 @@ class GraphNodeExit extends GraphNode {
 
     static {
         GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
     }
 
     constructor(data = {}) {
@@ -183,6 +207,7 @@ class GraphNodeIf extends GraphNode {
 
     static {
         GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
     }
 
     constructor(data = {}) {
@@ -206,6 +231,7 @@ class GraphNodeSwitch extends GraphNode {
 
     static {
         GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
     }
 
     constructor(data = {}) {
@@ -222,6 +248,7 @@ class GraphNodeFor extends GraphNode {
 
     static {
         GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
     }
 
     constructor(data = {}) {
@@ -250,6 +277,7 @@ class GraphNodeForEach extends GraphNode {
 
     static {
         GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
     }
 
     constructor(data = {}) {
@@ -277,6 +305,7 @@ class GraphNodeWhile extends GraphNode {
 
     static {
         GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
     }
 
     constructor(data = {}) {
@@ -300,6 +329,7 @@ class GraphNodeThis extends GraphNode {
 
     static {
         GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
     }
 
     constructor(data = {}) {
@@ -316,6 +346,7 @@ class GraphNodeGet extends GraphNode {
 
     static {
         GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
     }
 
     constructor(data = {}) {
@@ -336,6 +367,7 @@ class GraphNodeSet extends GraphNode {
 
     static {
         GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
     }
 
     constructor(data = {}) {
@@ -363,6 +395,7 @@ class GraphNodeFunction extends GraphNode {
 
     static {
         GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
     }
 
     constructor(data = {}) {
@@ -382,6 +415,7 @@ class GraphNodeMethod extends GraphNode {
 
     static {
         GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
     }
 
     constructor(data = {}) {

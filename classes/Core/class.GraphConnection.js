@@ -1,5 +1,9 @@
 class GraphConnection {
 
+    static FromJson(data) {
+        return new GraphConnection(data);
+    }
+
     constructor(data = {}) {
         let object = this;
         object.id = data.id ?? guid();

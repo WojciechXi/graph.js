@@ -1,9 +1,14 @@
 class GraphMethod {
 
+    static FromJson(data = {}) {
+        data.graph = Graph.FromJson(data.graph);
+        return new GraphMethod(data);
+    }
+
     constructor(data = {}) {
         let object = this;
-        object.id = guid();
-        object.name = 'Method';
+        object.id = data.id ?? guid();
+        object.name = data.name ?? 'Method';
 
         object.graph = data.graph ?? new Graph();
     }

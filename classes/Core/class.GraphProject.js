@@ -1,8 +1,20 @@
 class GraphProject {
 
+    static FromJson(data) {
+        data.graphClasses.forEach(function (graphClass, index) {
+            data.graphClasses[index] = GraphClass.FromJson(graphClass);
+        });
+
+        data.graphFunctions.forEach(function (graphFunction, index) {
+            data.graphFunctions[index] = GraphFunction.FromJson(graphFunction);
+        });
+
+        return new GraphProject(data);
+    }
+
     constructor(data = {}) {
         let object = this;
-        object.id = guid();
+        object.id = data.id ?? guid();
         object.graphClasses = data.graphClasses ?? [];
         object.graphFunctions = data.graphFunctions ?? [];
     }

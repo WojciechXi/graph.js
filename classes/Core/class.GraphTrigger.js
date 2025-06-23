@@ -1,8 +1,12 @@
 class GraphTrigger {
 
+    static FromJson(data = {}) {
+        return new GraphTrigger(data);
+    }
+
     constructor(data = {}) {
         let object = this;
-        object.id = guid();
+        object.id = data.id ?? guid();
         object.name = data.name ?? 'Trigger';
         object.type = data.type ?? 'mixed';
         object.value = data.value ?? '';
