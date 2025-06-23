@@ -1,8 +1,9 @@
 class GraphFunction {
 
     static FromJson(data) {
-        data.graph = Graph.FromJson(data.graph);
-        return new GraphProject(data);
+        console.log(data);
+        if (data.graph) data.graph = Graph.FromJson(data.graph);
+        return new GraphFunction(data);
     }
 
     constructor(data = {}) {
@@ -25,7 +26,11 @@ class GraphFunction {
     get Code() {
         let object = this;
         let parts = [];
-        return parts.join(`\n\n`);
+        parts.push(`function ${this.name}(data={}) {`);
+        parts.push(`\tlet object = this;`);
+        parts.push(object.graph.Code);
+        parts.push(`}`);
+        return parts.join(`\n`);
     }
 
 }

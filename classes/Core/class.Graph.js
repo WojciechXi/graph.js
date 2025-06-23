@@ -32,6 +32,8 @@ class Graph {
         let object = this;
         object.id = guid();
 
+        object.localGraphVariables = data.localGraphVariables ?? [];
+
         object.triggerInputs = data.triggerInputs ?? [];
         object.triggerOutputs = data.triggerOutputs ?? [];
 
@@ -53,6 +55,15 @@ class Graph {
             nodes: object.nodes,
             connections: object.connections,
         };
+    }
+
+    get Code() {
+        let object = this;
+        let parts = [];
+        object.nodes.forEach(function (node, index) {
+            parts.push(node.Code);
+        });
+        return parts.join(`\n`)
     }
 
     get Root() {

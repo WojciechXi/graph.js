@@ -1,7 +1,7 @@
 class GraphMethod {
 
     static FromJson(data = {}) {
-        data.graph = Graph.FromJson(data.graph);
+        if (data.graph) data.graph = Graph.FromJson(data.graph);
         return new GraphMethod(data);
     }
 
@@ -24,9 +24,10 @@ class GraphMethod {
 
     get Code() {
         let object = this;
-        let parts = [`${object.name}() {`];
-
-        parts.push(`}`);
+        let parts = [`\t${object.name}(data = {}) {`];
+        parts.push(`\t\tlet object = this;`);
+        parts.push(object.graph.Code);
+        parts.push(`\t}`);
         return parts.join(`\n\n`);
     }
 

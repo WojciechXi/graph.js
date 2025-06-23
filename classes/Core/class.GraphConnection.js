@@ -7,11 +7,11 @@ class GraphConnection {
     constructor(data = {}) {
         let object = this;
         object.id = data.id ?? guid();
-        object.input = data.input ?? null;
-        object.inputId = object.input ? object.input.id : null;
+        object.inputId = data.inputId ?? null;
+        object.outputId = data.outputId ?? null;
 
+        object.input = data.input ?? null;
         object.output = data.output ?? null;
-        object.outputId = object.output ? object.output.id : null;
     }
 
     toJson() {
@@ -35,6 +35,8 @@ class GraphConnection {
 
     Resize(canvas, offset = {}) {
         let object = this;
+        if (!object.input) return;
+        if (!object.output) return;
         object.Line.a = object.input.x + 4;
         object.Line.b = object.input.y + 4;
         object.Line.x = object.output.x + 4;

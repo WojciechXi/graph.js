@@ -32,6 +32,7 @@ class GraphProject {
         let object = this;
         let parts = [];
 
+        for (let graphFunction of object.graphFunctions) parts.push(graphFunction.Code);
         for (let graphClass of object.graphClasses) parts.push(graphClass.Code);
 
         return parts.join(`\n\n`);

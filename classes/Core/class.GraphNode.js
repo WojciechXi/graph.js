@@ -52,6 +52,10 @@ class GraphNode {
         };
     }
 
+    get Code() {
+        return ``;
+    }
+
     get RoundRect() {
         let object = this;
         return object.roundRect ?? (object.roundRect = new RoundRect());
@@ -173,6 +177,10 @@ class GraphNodeBreak extends GraphNode {
         ];
     }
 
+    get Code() {
+        return `break;`;
+    }
+
 }
 
 class GraphNodeEnter extends GraphNode {
@@ -199,6 +207,10 @@ class GraphNodeExit extends GraphNode {
     constructor(data = {}) {
         super(data);
         let object = this;
+    }
+
+    get Code() {
+        return `return;`;
     }
 
 }
@@ -271,6 +283,14 @@ class GraphNodeFor extends GraphNode {
         let object = this;
     }
 
+    get Code() {
+        let object = this;
+        let parts = [];
+        parts.push(`for(let i = 0; i < 10; i++) {`);
+        parts.push(`}`);
+        return parts.join(`\n`);
+    }
+
 }
 
 class GraphNodeForEach extends GraphNode {
@@ -299,6 +319,15 @@ class GraphNodeForEach extends GraphNode {
         let object = this;
     }
 
+    get Code() {
+        let object = this;
+        let parts = [];
+        parts.push(`target.forEach(function(item, index){`);
+
+        parts.push(`});`);
+        return parts.join(`\n`);
+    }
+
 }
 
 class GraphNodeWhile extends GraphNode {
@@ -323,6 +352,15 @@ class GraphNodeWhile extends GraphNode {
         let object = this;
     }
 
+    get Code() {
+        let object = this;
+        let parts = [];
+        parts.push(`while( false ) {`);
+
+        parts.push(`}`);
+        return parts.join(`\n`);
+    }
+
 }
 
 class GraphNodeThis extends GraphNode {
@@ -338,6 +376,13 @@ class GraphNodeThis extends GraphNode {
         ];
         super(data);
         let object = this;
+    }
+
+    get Code() {
+        let object = this;
+        let parts = [];
+        parts.push(`this`);
+        return parts.join(`\n`);
     }
 
 }

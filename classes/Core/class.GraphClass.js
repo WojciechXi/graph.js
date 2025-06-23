@@ -4,10 +4,12 @@ class GraphClass {
         data.graphVariables.forEach(function (graphClass, index) {
             data.graphVariables[index] = GraphClass.FromJson(graphClass);
         });
+
         data.graphMethods.forEach(function (graphFunction, index) {
             data.graphMethods[index] = GraphFunction.FromJson(graphFunction);
         });
-        return new GraphProject(data);
+
+        return new GraphClass(data);
     }
 
     constructor(data = {}) {

@@ -18,10 +18,21 @@ class GraphEditor {
 
     Save() {
         let object = this;
-        console.log(JSON.stringify(object.graphProject, function (key, value) {
+        let json = JSON.stringify(object.graphProject, function (key, value) {
             if (value instanceof Object && value.toJson) return value.toJson();
             return value;
-        }));
+        }, 5);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/save.php', true);
+        xhr.onload = function (event) {
+            console.log(xhr.responseText);
+        };
+
+        let formData = new FormData();
+        formData.append('json', json);
+        formData.append('code', object.graphProject.Code);
+        xhr.send(formData);
     }
 
     set Selection(selection) {

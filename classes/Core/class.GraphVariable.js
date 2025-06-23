@@ -52,8 +52,8 @@ class GraphVariable {
     get Code() {
         let object = this;
         return [
-            `get ${object.name}() { return this._${object.name}; }`,
-            `set ${object.name}(value) { return this._${object.name} = value; }`,
+            `\tget ${object.name}() { return this._${object.name}; }`,
+            `\tset ${object.name}(value) { return this._${object.name} = value; }`,
         ].join(`\n\n`);
     }
 
