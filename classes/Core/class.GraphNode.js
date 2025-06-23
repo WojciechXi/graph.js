@@ -61,7 +61,7 @@ class GraphNode {
         }
     }
 
-    Run(graphProject, trigger) {
+    Run(graphProject, triggerInput) {
         let object = this;
     }
 
@@ -268,14 +268,14 @@ class GraphNodeEnter extends GraphNode {
         }
     }
 
-    Run(graphProject, trigger) {
+    Run(graphProject, triggerInput) {
         let object = this;
         console.log("Enter");
 
-        for (let connection of object.graph.FindConnections(trigger.id)) {
-            if (connection.input == trigger) {
+        for (let connection of object.graph.FindConnections(triggerInput.id)) {
+            if (connection.input == triggerInput) {
                 connection.output.graphNode.Run(graphProject, connection.output);
-            } else if (connection.output == trigger) {
+            } else if (connection.output == triggerInput) {
                 connection.input.graphNode.Run(graphProject, connection.input);
             }
         }
@@ -413,7 +413,7 @@ class GraphNodeIf extends GraphNode {
         ];
     }
 
-    Run(graphProject, trigger) {
+    Run(graphProject, triggerInput) {
         let object = this;
         console.log("Node If");
 
@@ -501,6 +501,7 @@ class GraphNodeFor extends GraphNode {
         let object = this;
         if (!object.triggerInputs.length) object.triggerInputs = [
             new GraphTrigger({ name: 'enter', }),
+            new GraphTrigger({ name: 'break', }),
         ];
         if (!object.dataInputs.length) object.dataInputs = [
             new GraphVariable({ name: 'first', type: 'int', value: 0 }),
@@ -519,30 +520,39 @@ class GraphNodeFor extends GraphNode {
     Run(graphProject, triggerInput) {
         let object = this;
 
-        let triggerOutputBody = null;
-        let triggerOutputExit = null;
+        console.log('Node For');
 
-        for (let trigger of object.TriggerOutputs) {
-            if (trigger.name == 'body') triggerOutputBody = trigger;
-            else if (trigger.name == 'exit') triggerOutputExit = trigger;
-        }
+        if (triggerInput.name == 'enter') {
+            object.running = true;
 
-        for (let i = 0; i < 10; i++) {
-            for (let connection of object.graph.FindConnections(triggerOutputBody.id)) {
-                if (connection.input == triggerOutputBody) {
+            let triggerOutputBody = null;
+            let triggerOutputExit = null;
+
+            for (let trigger of object.TriggerOutputs) {
+                if (trigger.name == 'body') triggerOutputBody = trigger;
+                else if (trigger.name == 'exit') triggerOutputExit = trigger;
+            }
+
+            for (let i = 0; i < 10; i++) {
+                if (!object.running) break;
+                for (let connection of object.graph.FindConnections(triggerOutputBody.id)) {
+                    if (connection.input == triggerOutputBody) {
+                        connection.output.graphNode.Run(graphProject, connection.output);
+                    } else if (connection.output == triggerOutputBody) {
+                        connection.input.graphNode.Run(graphProject, connection.input);
+                    }
+                }
+            }
+
+            for (let connection of object.graph.FindConnections(triggerOutputExit.id)) {
+                if (connection.input == triggerOutputExit) {
                     connection.output.graphNode.Run(graphProject, connection.output);
-                } else if (connection.output == triggerOutputBody) {
+                } else if (connection.output == triggerOutputExit) {
                     connection.input.graphNode.Run(graphProject, connection.input);
                 }
             }
-        }
-
-        for (let connection of object.graph.FindConnections(triggerOutputExit.id)) {
-            if (connection.input == triggerOutputExit) {
-                connection.output.graphNode.Run(graphProject, connection.output);
-            } else if (connection.output == triggerOutputExit) {
-                connection.input.graphNode.Run(graphProject, connection.input);
-            }
+        } else if (triggerInput.name == 'break') {
+            object.running = false;
         }
     }
 
@@ -648,6 +658,7 @@ class GraphNodeWhile extends GraphNode {
         let object = this;
         if (!object.triggerInputs.length) object.triggerInputs = [
             new GraphTrigger({ name: 'enter', }),
+            new GraphTrigger({ name: 'break', }),
         ];
         if (!object.dataInputs.length) object.dataInputs = [
             new GraphVariable({ name: 'predicate', type: 'bool', value: false }),
@@ -658,8 +669,9 @@ class GraphNodeWhile extends GraphNode {
         ];
     }
 
-    Run(graphNode, trigger) {
+    Run(graphProject, triggerInput) {
         let object = this;
+        console.log("While");
     }
 
     toJson() {
@@ -782,9 +794,8 @@ class GraphNodeSet extends GraphNode {
         ];
     }
 
-    Run(graphProject, trigger) {
+    Run(graphProject, triggerInput) {
         let object = this;
-        console.log("Node Set");
 
         let triggerExit = null;
 
