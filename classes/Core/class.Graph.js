@@ -1,7 +1,7 @@
 class Graph {
 
     static FromJson(data = {}) {
-        return new Graph(data);
+        return new this(data);
     }
 
     constructor(data = {}) {
@@ -321,6 +321,10 @@ class Graph {
 
 class FunctionGraph extends Graph {
 
+    static FromJson(data = {}) {
+        return new this(data);
+    }
+
     constructor(data = {}) {
         super(data);
         let object = this;
@@ -330,7 +334,6 @@ class FunctionGraph extends Graph {
             data.nodes.forEach(function (node) {
                 node.graph = object;
                 node.caller = object.graphFunction;
-                console.log(node.caller);
                 if (node instanceof GraphNode) object.nodes.push(node);
                 else object.nodes.push(GraphNode.FromJson(node));
             });
@@ -344,6 +347,25 @@ class FunctionGraph extends Graph {
         if (data.connections) {
             data.connections.forEach(function (connection) {
                 connection.graph = object;
+                object.nodes.forEach(function (node) {
+                    if (node.DataInputs) node.DataInputs.forEach(function (dataInput) {
+                        if (dataInput.id == connection.inputId) connection.input = dataInput;
+                        if (dataInput.id == connection.outputId) connection.output = dataInput;
+                    });
+                    if (node.DataOutputs) node.DataOutputs.forEach(function (dataOutput) {
+                        if (dataOutput.id == connection.inputId) connection.input = dataOutput;
+                        if (dataOutput.id == connection.outputId) connection.output = dataOutput;
+                    });
+                    if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                        if (triggerInput.id == connection.inputId) connection.input = triggerInput;
+                        if (triggerInput.id == connection.outputId) connection.output = triggerInput;
+                    });
+                    if (node.TriggerOutputs) node.TriggerOutputs.forEach(function (triggerOutput) {
+                        if (triggerOutput.id == connection.inputId) connection.input = triggerOutput;
+                        if (triggerOutput.id == connection.outputId) connection.output = triggerOutput;
+                    });
+                });
+                console.log(connection);
                 if (connection instanceof GraphConnection) object.connections.push(connection);
                 else object.connections.push(GraphConnection.FromJson(connection, object));
             });
@@ -370,6 +392,10 @@ class FunctionGraph extends Graph {
 
 class MethodGraph extends Graph {
 
+    static FromJson(data = {}) {
+        return new this(data);
+    }
+
     constructor(data = {}) {
         super(data);
         let object = this;
@@ -379,7 +405,6 @@ class MethodGraph extends Graph {
             data.nodes.forEach(function (node) {
                 node.graph = object;
                 node.caller = object.graphMethod;
-                console.log(node.caller);
                 if (node instanceof GraphNode) object.nodes.push(node);
                 else object.nodes.push(GraphNode.FromJson(node));
             });
@@ -393,6 +418,24 @@ class MethodGraph extends Graph {
         if (data.connections) {
             data.connections.forEach(function (connection) {
                 connection.graph = object;
+                object.nodes.forEach(function (node) {
+                    node.dataInputs.forEach(function (dataInput) {
+                        if (dataInput.id == connection.inputId) connection.input = dataInput;
+                        if (dataInput.id == connection.outputId) connection.output = dataInput;
+                    });
+                    node.dataOutputs.forEach(function (dataOutput) {
+                        if (dataOutput.id == connection.inputId) connection.input = dataOutput;
+                        if (dataOutput.id == connection.outputId) connection.output = dataOutput;
+                    });
+                    node.triggerInputs.forEach(function (triggerInput) {
+                        if (triggerInput.id == connection.inputId) connection.input = triggerInput;
+                        if (triggerInput.id == connection.outputId) connection.output = triggerInput;
+                    });
+                    node.triggerOutputs.forEach(function (triggerOutput) {
+                        if (triggerOutput.id == connection.inputId) connection.input = triggerOutput;
+                        if (triggerOutput.id == connection.outputId) connection.output = triggerOutput;
+                    });
+                });
                 if (connection instanceof GraphConnection) object.connections.push(connection);
                 else object.connections.push(GraphConnection.FromJson(connection, object));
             });

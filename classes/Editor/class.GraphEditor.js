@@ -100,6 +100,7 @@ class GraphEditor {
                             event: {
                                 click: function (event) {
                                     let graphFunction = new GraphFunction({
+                                        graphProject: object.graphProject,
                                         triggerInputs: [
                                             new GraphTrigger({ name: 'enter' }),
                                         ],
@@ -125,7 +126,9 @@ class GraphEditor {
                             content: 'Nowa klasa',
                             event: {
                                 click: function (event) {
-                                    let graphClass = new GraphClass();
+                                    let graphClass = new GraphClass({
+                                        graphProject: object.graphProject,
+                                    });
                                     object.graphProject.graphClasses.push(graphClass);
                                     object.Selection = graphClass;
                                 },
@@ -139,7 +142,9 @@ class GraphEditor {
                             event: {
                                 click: function (event) {
                                     if (!object.graphClass) return;
-                                    let graphMethod = new GraphMethod();
+                                    let graphMethod = new GraphMethod({
+                                        graphClass: object.graphClass,
+                                    });
                                     object.graphClass.graphMethods.push(graphMethod);
                                     object.Selection = graphMethod;
                                 },
@@ -153,7 +158,9 @@ class GraphEditor {
                             event: {
                                 click: function (event) {
                                     if (!object.graphClass) return;
-                                    let graphVariable = new GraphVariable();
+                                    let graphVariable = new GraphVariable({
+                                        graphClass: object.graphClass,
+                                    });
                                     object.graphClass.graphVariables.push(graphVariable);
                                     object.Selection = graphVariable;
                                 },

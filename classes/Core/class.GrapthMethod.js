@@ -9,13 +9,21 @@ class GraphMethod {
         let object = this;
         object.id = data.id ?? guid();
         object.name = data.name ?? 'Method';
+
         object.triggerInputs = data.triggerInputs ?? [];
         object.triggerOutputs = data.triggerOutputs ?? [];
         object.dataInputs = data.dataInputs ?? [];
         object.dataOutputs = data.dataOutputs ?? [];
-        object.graph = data.graph ?? new MethodGraph({
-            graphMethod: object,
-        });
+
+        if (data.graph) {
+            data.graph.graphMethod = object;
+            if (data.graph instanceof MethodGraph) object.graph = data.graph;
+            else object.graph = MethodGraph.FromJson(data.graph);
+        } else {
+            object.graph = new MethodGraph({
+                graphMethod: object,
+            });
+        }
     }
 
     toJson() {
@@ -24,6 +32,12 @@ class GraphMethod {
             id: object.id,
             name: object.name,
             graph: object.graph,
+
+            triggerInputs: object.triggerInputs,
+            triggerOutputs: object.triggerOutputs,
+
+            dataInputs: object.dataInputs,
+            dataOutputs: object.dataOutputs,
         };
     }
 

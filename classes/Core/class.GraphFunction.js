@@ -9,10 +9,45 @@ class GraphFunction {
         object.id = data.id ?? guid();
         object.name = data.name ?? `Function`;
 
-        object.triggerInputs = data.triggerInputs ?? [];
-        object.triggerOutputs = data.triggerOutputs ?? [];
-        object.dataInputs = data.dataInputs ?? [];
-        object.dataOutputs = data.dataOutputs ?? [];
+        object.triggerInputs = [];
+        object.triggerOutputs = [];
+        object.dataInputs = [];
+        object.dataOutputs = [];
+
+        object.graphProject = data.graphProject ?? null;
+        if (object.graphProject) object.graphProjectId = object.graphProject.id;
+
+        if (data.triggerInputs) {
+            data.triggerInputs.forEach(function (triggerInput) {
+                triggerInput.caller = object;
+                if (triggerInput instanceof GraphTrigger) object.triggerInputs.push(triggerInput);
+                else object.triggerInputs.push(GraphTrigger.FromJson(triggerInput));
+            });
+        }
+
+        if (data.triggerOutputs) {
+            data.triggerOutputs.forEach(function (triggerOutput) {
+                triggerOutput.caller = object;
+                if (triggerOutput instanceof GraphTrigger) object.triggerOutputs.push(triggerOutput);
+                else object.triggerOutputs.push(GraphTrigger.FromJson(triggerOutput));
+            });
+        }
+
+        if (data.dataInputs) {
+            data.dataInputs.forEach(function (dataInput) {
+                dataInput.caller = object;
+                if (dataInput instanceof GraphVariable) object.dataInputs.push(dataInput);
+                else object.dataInputs.push(GraphVariable.FromJson(dataInput));
+            });
+        }
+
+        if (data.dataOutputs) {
+            data.dataOutputs.forEach(function (dataOutput) {
+                dataOutput.caller = object;
+                if (dataOutput instanceof GraphVariable) object.dataOutputs.push(dataOutput);
+                else object.dataOutputs.push(GraphVariable.FromJson(dataOutput));
+            });
+        }
 
         if (data.graph) {
             data.graph.graphFunction = object;
@@ -31,6 +66,12 @@ class GraphFunction {
             id: object.id,
             name: object.name,
             graph: object.graph,
+
+            triggerInputs: object.triggerInputs,
+            triggerOutputs: object.triggerOutputs,
+
+            dataInputs: object.dataInputs,
+            dataOutputs: object.dataOutputs,
         };
     }
 

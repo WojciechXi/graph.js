@@ -1,0 +1,73 @@
+{
+     "id": "f048e365-718c-4e25-a29e-ee15e41e4c38",
+     "graphClasses": [],
+     "graphFunctions": [
+          {
+               "id": "a2164b0d-9c51-4a0b-924c-a08b5a2a21c1",
+               "name": "Function",
+               "graph": {
+                    "id": "c796788e-96e6-4418-b601-31bacdadedb5",
+                    "nodes": [
+                         {
+                              "type": "GraphNodeEnter",
+                              "id": "78c5b290-85fe-41de-a78a-b84b419a4440",
+                              "x": -273,
+                              "y": -22,
+                              "callerId": "a2164b0d-9c51-4a0b-924c-a08b5a2a21c1"
+                         },
+                         {
+                              "type": "GraphNodeReturn",
+                              "id": "72ac4c08-5292-4389-bada-b797fc74751a",
+                              "x": 4,
+                              "y": -24,
+                              "callerId": "a2164b0d-9c51-4a0b-924c-a08b5a2a21c1"
+                         }
+                    ],
+                    "connections": [
+                         {
+                              "id": "524046bf-3873-45fc-8c85-424b2eb8e573",
+                              "inputId": "46ce1816-d847-4fa3-bcc1-cda8ff609fd6",
+                              "outputId": "fb6f1506-e8bd-4ac0-a4bc-402d41f8734a"
+                         },
+                         {
+                              "id": "d90bfd66-5263-4a4a-a6b6-6e0e741273a2",
+                              "inputId": "2e7da830-94b8-4971-bb0e-82ad695fea89",
+                              "outputId": "78a55bae-fc4e-4495-b827-58d4a3f2de04"
+                         }
+                    ]
+               },
+               "triggerInputs": [
+                    {
+                         "id": "46ce1816-d847-4fa3-bcc1-cda8ff609fd6",
+                         "name": "enter",
+                         "type": "mixed",
+                         "value": ""
+                    }
+               ],
+               "triggerOutputs": [
+                    {
+                         "id": "fb6f1506-e8bd-4ac0-a4bc-402d41f8734a",
+                         "name": "exit",
+                         "type": "mixed",
+                         "value": ""
+                    }
+               ],
+               "dataInputs": [
+                    {
+                         "id": "78a55bae-fc4e-4495-b827-58d4a3f2de04",
+                         "name": "request",
+                         "type": "mixed",
+                         "value": ""
+                    }
+               ],
+               "dataOutputs": [
+                    {
+                         "id": "2e7da830-94b8-4971-bb0e-82ad695fea89",
+                         "name": "response",
+                         "type": "mixed",
+                         "value": ""
+                    }
+               ]
+          }
+     ]
+}

@@ -11,8 +11,9 @@ class GraphConnection {
         object.outputId = data.outputId ?? null;
 
         object.input = data.input ?? null;
-        if (object.input) object.inputId = object.input.id;
         object.output = data.output ?? null;
+
+        if (object.input) object.inputId = object.input.id;
         if (object.output) object.outputId = object.output.id;
     }
 
