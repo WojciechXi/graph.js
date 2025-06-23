@@ -41,19 +41,13 @@ class Graph {
         let object = this;
         let parts = [];
 
-        // let enterNode = null;
-        // for (let node of object.nodes) {
-        //     if (node instanceof GraphNodeEnter) {
-        //         enterNode = node;
-        //         break;
-        //     }
-        // }
+        for (let node of object.nodes) {
+            if (node instanceof GraphNodeEnter) {
+                parts.push(node.GetCode(object));
+                break;
+            }
+        }
 
-        // parts.push(enterNode.Code);
-
-        object.nodes.forEach(function (node, index) {
-            parts.push(node.Code);
-        });
         return parts.join(`\n`)
     }
 
@@ -373,7 +367,7 @@ class FunctionGraph extends Graph {
                         if (triggerOutput.id == connection.outputId) connection.output = triggerOutput;
                     });
                 });
-                console.log(connection);
+
                 if (connection instanceof GraphConnection) object.connections.push(connection);
                 else object.connections.push(GraphConnection.FromJson(connection, object));
             });

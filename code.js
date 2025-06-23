@@ -1,23 +1,19 @@
 function Function(data = {}) {
 	let object = this;
-	let request = '';
-	return {
-		response: '',
-	}
+	let request = data.request;
 	if (true) {
+		return {
+			response: '',
+		}
 	} else {
+		for (let i = 0; i < 10; i++) {
+			while (false) {
+			}
+			target.member = value;
+			target.member;
+		}
+		return {
+			response: '',
+		}
 	}
-	switch ('name') {
-	}
-	for (let i = 0; i < 10; i++) {
-	}
-	target.forEach(function (item, index) {
-	});
-	while (false) {
-	}
-
-
-
-
-
 }

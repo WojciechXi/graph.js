@@ -79,7 +79,7 @@ class GraphNode {
         };
     }
 
-    get Code() {
+    GetCode(graph) {
         return ``;
     }
 
@@ -234,12 +234,33 @@ class GraphNodeEnter extends GraphNode {
         if (data.caller) object.callerId = data.caller.id;
     }
 
-    get Code() {
+    GetCode(graph) {
         let object = this;
         let parts = [];
         object.DataOutputs.forEach(function (dataOutput) {
-            parts.push(`let ${dataOutput.name} = '${dataOutput.value}';`);
+            parts.push(`\tlet ${dataOutput.name} = data.${dataOutput.name};`);
         });
+
+        object.TriggerOutputs.forEach(function (triggerOutput) {
+            graph.connections.forEach(function (connection) {
+                if (triggerOutput.id == connection.inputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.outputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                } else if (triggerOutput.id == connection.outputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.inputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                }
+            });
+        });
+
         return parts.join(`\n`)
     }
 
@@ -277,7 +298,7 @@ class GraphNodeReturn extends GraphNode {
         if (data.caller) object.callerId = data.caller.id;
     }
 
-    get Code() {
+    GetCode(graph) {
         let object = this;
         let parts = [];
         parts.push(`return {`);
@@ -320,7 +341,7 @@ class GraphNodeBreak extends GraphNode {
         if (!object.triggerInputs.length) object.triggerInputs = [new GraphTrigger({ name: 'enter' })];
     }
 
-    get Code() {
+    GetCode(graph) {
         return `break;`;
     }
 
@@ -360,12 +381,54 @@ class GraphNodeIf extends GraphNode {
         ];
     }
 
-    get Code() {
+    GetCode(graph) {
         let object = this;
         let parts = [];
         parts.push(`if( true ) {`);
 
+        object.TriggerOutputs.forEach(function (triggerOutput) {
+            if (triggerOutput.name != 'true') return;
+            graph.connections.forEach(function (connection) {
+                if (triggerOutput.id == connection.inputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.outputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                } else if (triggerOutput.id == connection.outputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.inputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                }
+            });
+        });
+
         parts.push(`} else {`);
+
+        object.TriggerOutputs.forEach(function (triggerOutput) {
+            if (triggerOutput.name != 'false') return;
+            graph.connections.forEach(function (connection) {
+                if (triggerOutput.id == connection.inputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.outputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                } else if (triggerOutput.id == connection.outputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.inputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                }
+            });
+        });
 
         parts.push(`}`);
         return parts.join(`\n`);
@@ -412,7 +475,7 @@ class GraphNodeSwitch extends GraphNode {
         ];
     }
 
-    get Code() {
+    GetCode(graph) {
         let object = this;
         let parts = [];
         parts.push(`switch('name') {`);
@@ -462,12 +525,55 @@ class GraphNodeFor extends GraphNode {
         ];
     }
 
-    get Code() {
+    GetCode(graph) {
         let object = this;
         let parts = [];
         parts.push(`for(let i = 0; i < 10; i++) {`);
 
+        object.TriggerOutputs.forEach(function (triggerOutput) {
+            if (triggerOutput.name != 'body') return;
+            graph.connections.forEach(function (connection) {
+                if (triggerOutput.id == connection.inputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.outputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                } else if (triggerOutput.id == connection.outputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.inputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                }
+            });
+        });
+
         parts.push(`}`);
+
+        object.TriggerOutputs.forEach(function (triggerOutput) {
+            if (triggerOutput.name != 'exit') return;
+            graph.connections.forEach(function (connection) {
+                if (triggerOutput.id == connection.inputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.outputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                } else if (triggerOutput.id == connection.outputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.inputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                }
+            });
+        });
+
         return parts.join(`\n`);
     }
 
@@ -529,7 +635,7 @@ class GraphNodeForEach extends GraphNode {
         ];
     }
 
-    get Code() {
+    GetCode(graph) {
         let object = this;
         let parts = [];
         parts.push(`target.forEach(function(item, index){`);
@@ -592,12 +698,55 @@ class GraphNodeWhile extends GraphNode {
         ];
     }
 
-    get Code() {
+    GetCode(graph) {
         let object = this;
         let parts = [];
         parts.push(`while( false ) {`);
 
+        object.TriggerOutputs.forEach(function (triggerOutput) {
+            if (triggerOutput.name != 'body') return;
+            graph.connections.forEach(function (connection) {
+                if (triggerOutput.id == connection.inputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.outputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                } else if (triggerOutput.id == connection.outputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.inputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                }
+            });
+        });
+
         parts.push(`}`);
+
+        object.TriggerOutputs.forEach(function (triggerOutput) {
+            if (triggerOutput.name != 'exit') return;
+            graph.connections.forEach(function (connection) {
+                if (triggerOutput.id == connection.inputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.outputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                } else if (triggerOutput.id == connection.outputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.inputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                }
+            });
+        });
+
         return parts.join(`\n`);
     }
 
@@ -642,7 +791,7 @@ class GraphNodeThis extends GraphNode {
         ];
     }
 
-    get Code() {
+    GetCode(graph) {
         let object = this;
         let parts = [];
         return parts.join(`\n`);
@@ -672,6 +821,12 @@ class GraphNodeGet extends GraphNode {
     constructor(data = {}) {
         super(data);
         let object = this;
+        if (!object.triggerInputs.length) object.triggerInputs = [
+            new GraphTrigger({ name: 'enter' })
+        ];
+        if (!object.triggerOutputs.length) object.triggerOutputs = [
+            new GraphTrigger({ name: 'exit' })
+        ];
         if (!object.dataInputs.length) object.dataInputs = [
             new GraphVariable({ name: 'target', type: 'object', value: null }),
             new GraphVariable({ name: 'member', type: 'string', value: 'variable' }),
@@ -681,18 +836,54 @@ class GraphNodeGet extends GraphNode {
         ];
     }
 
-    get Code() {
+    GetCode(graph) {
         let object = this;
         let parts = [];
+
+        parts.push('target.member;');
+
+        object.TriggerOutputs.forEach(function (triggerOutput) {
+            if (triggerOutput.name != 'exit') return;
+            graph.connections.forEach(function (connection) {
+                if (triggerOutput.id == connection.inputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.outputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                } else if (triggerOutput.id == connection.outputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.inputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                }
+            });
+        });
+
         return parts.join(`\n`);
     }
 
     toJson() {
         let json = super.toJson();
         let object = this;
+        json.triggerInputs = object.triggerInputs;
+        json.triggerOutputs = object.triggerOutputs;
         json.dataInputs = object.dataInputs;
         json.dataOutputs = object.dataOutputs;
         return json;
+    }
+
+    get TriggerInputs() {
+        let object = this;
+        return object.triggerInputs;
+    }
+
+    get TriggerOutputs() {
+        let object = this;
+        return object.triggerOutputs;
     }
 
     get DataInputs() {
@@ -733,9 +924,33 @@ class GraphNodeSet extends GraphNode {
         ];
     }
 
-    get Code() {
+    GetCode(graph) {
         let object = this;
         let parts = [];
+
+        parts.push('target.member = value;');
+
+        object.TriggerOutputs.forEach(function (triggerOutput) {
+            if (triggerOutput.name != 'exit') return;
+            graph.connections.forEach(function (connection) {
+                if (triggerOutput.id == connection.inputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.outputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                } else if (triggerOutput.id == connection.outputId) {
+                    graph.nodes.forEach(function (node) {
+                        if (node.TriggerInputs) node.TriggerInputs.forEach(function (triggerInput) {
+                            if (triggerInput.id != connection.inputId) return;
+                            parts.push(node.GetCode(graph));
+                        });
+                    });
+                }
+            });
+        });
+
         return parts.join(`\n`);
     }
 
@@ -789,7 +1004,7 @@ class GraphNodeFunction extends GraphNode {
         ];
     }
 
-    get Code() {
+    GetCode(graph) {
         let object = this;
         let parts = [];
         return parts.join(`\n`);
@@ -836,7 +1051,7 @@ class GraphNodeMethod extends GraphNode {
         ];
     }
 
-    get Code() {
+    GetCode(graph) {
         let object = this;
         let parts = [];
         return parts.join(`\n`);
