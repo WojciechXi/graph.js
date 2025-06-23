@@ -17,3 +17,11 @@ function Function(data = {}) {
 		}
 	}
 }
+
+function B(data = {}) {
+	let object = this;
+	let request = data.request;
+	return {
+		response: '',
+	}
+}

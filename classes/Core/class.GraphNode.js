@@ -1111,3 +1111,40 @@ class GraphNodeMath extends GraphNode {
     }
 
 }
+
+class GraphNodeString extends GraphNode {
+
+    static {
+        GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
+    }
+
+    constructor(data = {}) {
+        super(data);
+        let object = this;
+        object.value = data.value ?? '';
+        if (!object.dataOutputs.length) object.dataOutputs = [
+            new GraphVariable({ name: 'value', type: 'string', value: null }),
+        ];
+    }
+
+    GetCode(graph) {
+        let object = this;
+        let parts = [];
+        return `'${object.value}'`;
+    }
+
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.value = object.value;
+        json.dataOutputs = object.dataOutputs;
+        return json;
+    }
+
+    get DataOutputs() {
+        let object = this;
+        return object.dataOutputs;
+    }
+
+}

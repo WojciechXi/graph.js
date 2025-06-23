@@ -389,6 +389,83 @@
                          "value": ""
                     }
                ]
+          },
+          {
+               "id": "9ca9a8f6-0f21-4ab8-9108-212f1222fffc",
+               "name": "B",
+               "graph": {
+                    "id": "55c56e69-065d-4fa9-b94b-80a56c14fe8a",
+                    "nodes": [
+                         {
+                              "type": "GraphNodeEnter",
+                              "id": "1ee0a1c2-ee9e-45f1-83aa-520c05b16a13",
+                              "x": -20,
+                              "y": -127,
+                              "callerId": "9ca9a8f6-0f21-4ab8-9108-212f1222fffc"
+                         },
+                         {
+                              "type": "GraphNodeReturn",
+                              "id": "7aa31d37-a57e-429e-b866-393a6c82cb58",
+                              "x": 391,
+                              "y": -141,
+                              "callerId": "9ca9a8f6-0f21-4ab8-9108-212f1222fffc"
+                         }
+                    ],
+                    "connections": [
+                         {
+                              "id": "c03004ea-9a19-42c6-aae7-98bd6f1b2264",
+                              "inputId": "340f16e5-1d21-420f-9392-948101a127a0",
+                              "outputId": "340f16e5-1d21-420f-9392-948101a127a0"
+                         },
+                         {
+                              "id": "bf495cad-af1e-47cd-a92c-48f9ffc23c3d",
+                              "inputId": "7b2a1193-8beb-4ba1-aa89-4e40857c5978",
+                              "outputId": "7b2a1193-8beb-4ba1-aa89-4e40857c5978"
+                         },
+                         {
+                              "id": "28b76fbe-0212-4511-943a-3ec52cc2015c",
+                              "inputId": "383f5816-0a91-4d97-9be9-22d4d10f7232",
+                              "outputId": "3b560eef-52af-45f2-9260-b689fe292fd7"
+                         },
+                         {
+                              "id": "3128db3c-be85-492d-8f4f-a357043c3e35",
+                              "inputId": "5f064d96-c6b2-40a1-b969-a9fa0762a68b",
+                              "outputId": "fbb2a3df-7abb-4681-81cb-3ab39d02ea46"
+                         }
+                    ]
+               },
+               "triggerInputs": [
+                    {
+                         "id": "383f5816-0a91-4d97-9be9-22d4d10f7232",
+                         "name": "enter",
+                         "type": "mixed",
+                         "value": ""
+                    }
+               ],
+               "triggerOutputs": [
+                    {
+                         "id": "3b560eef-52af-45f2-9260-b689fe292fd7",
+                         "name": "exit",
+                         "type": "mixed",
+                         "value": ""
+                    }
+               ],
+               "dataInputs": [
+                    {
+                         "id": "fbb2a3df-7abb-4681-81cb-3ab39d02ea46",
+                         "name": "request",
+                         "type": "mixed",
+                         "value": ""
+                    }
+               ],
+               "dataOutputs": [
+                    {
+                         "id": "5f064d96-c6b2-40a1-b969-a9fa0762a68b",
+                         "name": "response",
+                         "type": "mixed",
+                         "value": ""
+                    }
+               ]
           }
      ]
 }
