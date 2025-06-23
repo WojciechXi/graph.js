@@ -6,36 +6,31 @@ class GraphNode {
     }
 
     static FromJson(data = {}) {
-        data.triggerInputs.forEach(function (triggerInput, index) {
-            data.triggerInputs[index] = GraphTrigger.FromJson(triggerInput);
-        });
-
-        data.triggerOutputs.forEach(function (triggerOutput, index) {
-            data.triggerOutputs[index] = GraphTrigger.FromJson(triggerOutput);
-        });
-
-        data.dataInputs.forEach(function (dataInput, index) {
-            data.dataInputs[index] = GraphVariable.FromJson(dataInput);
-        });
-
-        data.dataOutputs.forEach(function (dataOutput, index) {
-            data.dataOutputs[index] = GraphVariable.FromJson(dataOutput);
-        });
-
         return new (GraphNode.types[data.type])(data);
     }
 
     constructor(data = {}) {
         let object = this;
         object.id = data.id ?? guid();
+
         object.x = data.x ?? 0;
         object.y = data.y ?? 0;
+    }
 
-        object.triggerInputs = data.triggerInputs ?? [];
-        object.triggerOutputs = data.triggerOutputs ?? [];
+    get TriggerInputs() {
+        return null;
+    }
 
-        object.dataInputs = data.dataInputs ?? [];
-        object.dataOutputs = data.dataOutputs ?? [];
+    get TriggerOutputs() {
+        return null;
+    }
+
+    get DataInputs() {
+        return null;
+    }
+
+    get DataOutputs() {
+        return null;
     }
 
     toJson() {
@@ -45,10 +40,6 @@ class GraphNode {
             id: object.id,
             x: object.x,
             y: object.y,
-            triggerInputs: object.triggerInputs,
-            triggerOutputs: object.triggerOutputs,
-            dataInputs: object.dataInputs,
-            dataOutputs: object.dataOutputs,
         };
     }
 
@@ -73,21 +64,29 @@ class GraphNode {
         object.hover = object.RoundRect.Update(canvas, pointer);
         object.Text.Update(canvas, pointer);
 
-        object.triggerInputs.forEach(function (triggerInput) {
-            triggerInput.Update(canvas, pointer);
-        });
+        if (object.TriggerInputs) {
+            object.TriggerInputs.forEach(function (triggerInput) {
+                triggerInput.Update(canvas, pointer);
+            });
+        }
 
-        object.triggerOutputs.forEach(function (triggerOutput) {
-            triggerOutput.Update(canvas, pointer);
-        });
+        if (object.TriggerOutputs) {
+            object.TriggerOutputs.forEach(function (triggerOutput) {
+                triggerOutput.Update(canvas, pointer);
+            });
+        }
 
-        object.dataInputs.forEach(function (dataInput) {
-            dataInput.Update(canvas, pointer);
-        });
+        if (object.DataInputs) {
+            object.DataInputs.forEach(function (dataInput) {
+                dataInput.Update(canvas, pointer);
+            });
+        }
 
-        object.dataOutputs.forEach(function (dataOutput) {
-            dataOutput.Update(canvas, pointer);
-        });
+        if (object.DataOutputs) {
+            object.DataOutputs.forEach(function (dataOutput) {
+                dataOutput.Update(canvas, pointer);
+            });
+        }
     }
 
     Resize(canvas) {
@@ -96,45 +95,59 @@ class GraphNode {
         object.RoundRect.x = object.x;
         object.RoundRect.y = object.y;
 
+        let triggerInputsCount = object.TriggerInputs ? object.TriggerInputs.length : 0;
+        let triggerOutputsCount = object.TriggerOutputs ? object.TriggerOutputs.length : 0;
+
+        let dataInputsCount = object.DataInputs ? object.DataInputs.length : 0;
+        let dataOutputsCount = object.DataOutputs ? object.DataOutputs.length : 0;
+
         object.RoundRect.w = object.Text.GetWidth(canvas) + 16;
-        object.RoundRect.h = Math.max((object.triggerInputs.length + object.dataInputs.length) * 16, (object.triggerOutputs.length + object.dataOutputs.length) * 16) + 24;
+        object.RoundRect.h = Math.max((triggerInputsCount + dataInputsCount) * 16, (triggerOutputsCount + dataOutputsCount) * 16) + 24;
 
         object.Text.x = object.x + 8;
         object.Text.y = object.y + 16;
 
         let top = 24;
-        object.triggerInputs.forEach(function (graphTrigger, index) {
-            graphTrigger.Resize(canvas, object, {
-                x: 8,
-                y: top,
+        if (object.TriggerInputs) {
+            object.TriggerInputs.forEach(function (graphTrigger, index) {
+                graphTrigger.Resize(canvas, object, {
+                    x: 8,
+                    y: top,
+                });
+                top += 16;
             });
-            top += 16;
-        });
+        }
 
-        object.dataInputs.forEach(function (graphVariable, index) {
-            graphVariable.Resize(canvas, object, {
-                x: 8,
-                y: top,
+        if (object.DataInputs) {
+            object.DataInputs.forEach(function (graphVariable, index) {
+                graphVariable.Resize(canvas, object, {
+                    x: 8,
+                    y: top,
+                });
+                top += 16;
             });
-            top += 16;
-        });
+        }
 
         top = 24;
-        object.triggerOutputs.forEach(function (graphTrigger, index) {
-            graphTrigger.Resize(canvas, object, {
-                x: object.RoundRect.w - 16,
-                y: top,
+        if (object.TriggerOutputs) {
+            object.TriggerOutputs.forEach(function (graphTrigger, index) {
+                graphTrigger.Resize(canvas, object, {
+                    x: object.RoundRect.w - 16,
+                    y: top,
+                });
+                top += 16;
             });
-            top += 16;
-        });
+        }
 
-        object.dataOutputs.forEach(function (graphVariable, index) {
-            graphVariable.Resize(canvas, object, {
-                x: object.RoundRect.w - 16,
-                y: top,
+        if (object.DataOutputs) {
+            object.DataOutputs.forEach(function (graphVariable, index) {
+                graphVariable.Resize(canvas, object, {
+                    x: object.RoundRect.w - 16,
+                    y: top,
+                });
+                top += 16;
             });
-            top += 16;
-        });
+        }
     }
 
     Draw(canvas) {
@@ -143,21 +156,29 @@ class GraphNode {
         object.RoundRect.Draw(canvas);
         object.Text.Draw(canvas);
 
-        object.triggerInputs.forEach(function (graphTrigger, index) {
-            graphTrigger.Draw(canvas);
-        });
+        if (object.TriggerInputs) {
+            object.TriggerInputs.forEach(function (graphTrigger, index) {
+                graphTrigger.Draw(canvas);
+            });
+        }
 
-        object.dataInputs.forEach(function (graphVariable, index) {
-            graphVariable.Draw(canvas);
-        });
+        if (object.DataInputs) {
+            object.DataInputs.forEach(function (graphVariable, index) {
+                graphVariable.Draw(canvas);
+            });
+        }
 
-        object.triggerOutputs.forEach(function (graphTrigger, index) {
-            graphTrigger.Draw(canvas);
-        });
+        if (object.TriggerOutputs) {
+            object.TriggerOutputs.forEach(function (graphTrigger, index) {
+                graphTrigger.Draw(canvas);
+            });
+        }
 
-        object.dataOutputs.forEach(function (graphVariable, index) {
-            graphVariable.Draw(canvas);
-        });
+        if (object.DataOutputs) {
+            object.DataOutputs.forEach(function (graphVariable, index) {
+                graphVariable.Draw(canvas);
+            });
+        }
     }
 
 }
@@ -172,9 +193,12 @@ class GraphNodeBreak extends GraphNode {
     constructor(data = {}) {
         super(data);
         let object = this;
-        object.triggerInputs = [
-            new GraphTrigger({ name: 'enter', })
-        ];
+        object.triggerInputs = [new GraphTrigger({ name: 'enter' })];
+    }
+
+    get TriggerInputs() {
+        let object = this;
+        return object.triggerInputs;
     }
 
     get Code() {
@@ -193,6 +217,17 @@ class GraphNodeEnter extends GraphNode {
     constructor(data = {}) {
         super(data);
         let object = this;
+        object.caller = data.caller ?? null;
+    }
+
+    get TriggerOutputs() {
+        let object = this;
+        return object.caller ? object.caller.triggerInputs : null;
+    }
+
+    get DataOutputs() {
+        let object = this;
+        return object.caller ? object.caller.dataInputs : null;
     }
 
 }
@@ -207,6 +242,17 @@ class GraphNodeExit extends GraphNode {
     constructor(data = {}) {
         super(data);
         let object = this;
+        object.caller = data.caller ?? null;
+    }
+
+    get TriggerInputs() {
+        let object = this;
+        return object.caller ? object.caller.triggerOutputs : null;
+    }
+
+    get DataInputs() {
+        let object = this;
+        return object.caller ? object.caller.dataOutputs : null;
     }
 
     get Code() {
@@ -237,6 +283,21 @@ class GraphNodeIf extends GraphNode {
         let object = this;
     }
 
+    get TriggerInputs() {
+        let object = this;
+        return object.triggerInputs;
+    }
+
+    get TriggerOutputs() {
+        let object = this;
+        return object.triggerOutputs;
+    }
+
+    get DataInputs() {
+        let object = this;
+        return object.dataInputs;
+    }
+
 }
 
 class GraphNodeSwitch extends GraphNode {
@@ -252,6 +313,11 @@ class GraphNodeSwitch extends GraphNode {
         ];
         super(data);
         let object = this;
+    }
+
+    get TriggerInputs() {
+        let object = this;
+        return object.triggerInputs;
     }
 
 }
@@ -281,6 +347,26 @@ class GraphNodeFor extends GraphNode {
         ];
         super(data);
         let object = this;
+    }
+
+    get TriggerInputs() {
+        let object = this;
+        return object.triggerInputs;
+    }
+
+    get TriggerOutputs() {
+        let object = this;
+        return object.triggerOutputs;
+    }
+
+    get DataInputs() {
+        let object = this;
+        return object.dataInputs;
+    }
+
+    get DataOutputs() {
+        let object = this;
+        return object.dataOutputs;
     }
 
     get Code() {

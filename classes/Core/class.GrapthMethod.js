@@ -1,7 +1,7 @@
 class GraphMethod {
 
     static FromJson(data = {}) {
-        if (data.graph) data.graph = Graph.FromJson(data.graph);
+        if (data.graph) data.graph = MethodGraph.FromJson(data.graph);
         return new GraphMethod(data);
     }
 
@@ -9,8 +9,13 @@ class GraphMethod {
         let object = this;
         object.id = data.id ?? guid();
         object.name = data.name ?? 'Method';
-
-        object.graph = data.graph ?? new Graph();
+        object.triggerInputs = data.triggerInputs ?? [];
+        object.triggerOutputs = data.triggerOutputs ?? [];
+        object.dataInputs = data.dataInputs ?? [];
+        object.dataOutputs = data.dataOutputs ?? [];
+        object.graph = data.graph ?? new MethodGraph({
+            graphMethod: object,
+        });
     }
 
     toJson() {

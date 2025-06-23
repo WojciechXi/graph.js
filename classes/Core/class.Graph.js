@@ -1,22 +1,6 @@
 class Graph {
 
     static FromJson(data = {}) {
-        data.triggerInputs.forEach(function (graphTrigger, index) {
-            data.triggerInputs[index] = GraphTrigger.FromJson(graphTrigger);
-        });
-
-        data.triggerOutputs.forEach(function (graphTrigger, index) {
-            data.triggerOutputs[index] = GraphTrigger.FromJson(graphTrigger);
-        });
-
-        data.dataInputs.forEach(function (graphVariable, index) {
-            data.dataInputs[index] = GraphVariable.FromJson(graphVariable);
-        });
-
-        data.dataOutputs.forEach(function (graphVariable, index) {
-            data.dataOutputs[index] = GraphVariable.FromJson(graphVariable);
-        });
-
         data.nodes.forEach(function (graphNode, index) {
             data.nodes[index] = GraphNode.FromJson(graphNode);
         });
@@ -34,24 +18,30 @@ class Graph {
 
         object.localGraphVariables = data.localGraphVariables ?? [];
 
-        object.triggerInputs = data.triggerInputs ?? [];
-        object.triggerOutputs = data.triggerOutputs ?? [];
-
-        object.dataInputs = data.dataInputs ?? [];
-        object.dataOutputs = data.dataOutputs ?? [];
-
         object.nodes = data.nodes ?? [];
         object.connections = data.connections ?? [];
+    }
+
+    get TriggerInputs() {
+        return [];
+    }
+
+    get TriggerOutputs() {
+        return [];
+    }
+
+    get DataInputs() {
+        return [];
+    }
+
+    get DataOutputs() {
+        return [];
     }
 
     toJson() {
         let object = this;
         return {
             id: object.id,
-            triggerInputs: object.triggerInputs,
-            triggerOutputs: object.triggerOutputs,
-            dataInputs: object.dataInputs,
-            dataOutputs: object.dataOutputs,
             nodes: object.nodes,
             connections: object.connections,
         };
@@ -96,15 +86,8 @@ class Graph {
                     for (let node of object.nodes) {
                         if (node.hover) {
                             let dragItem = null;
-                            for (let item of node.triggerInputs) {
-                                if (item.hover) {
-                                    dragItem = item;
-                                    break;
-                                }
-                            }
-
-                            if (!dragItem) {
-                                for (let item of node.triggerOutputs) {
+                            if (node.TriggerInputs) {
+                                for (let item of node.TriggerInputs) {
                                     if (item.hover) {
                                         dragItem = item;
                                         break;
@@ -112,8 +95,8 @@ class Graph {
                                 }
                             }
 
-                            if (!dragItem) {
-                                for (let item of node.dataInputs) {
+                            if (!dragItem && node.TriggerOutputs) {
+                                for (let item of node.TriggerOutputs) {
                                     if (item.hover) {
                                         dragItem = item;
                                         break;
@@ -121,8 +104,17 @@ class Graph {
                                 }
                             }
 
-                            if (!dragItem) {
-                                for (let item of node.dataOutputs) {
+                            if (!dragItem && node.DataInputs) {
+                                for (let item of node.DataInputs) {
+                                    if (item.hover) {
+                                        dragItem = item;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!dragItem && node.DataOutputs) {
+                                for (let item of node.DataOutputs) {
                                     if (item.hover) {
                                         dragItem = item;
                                         break;
@@ -200,56 +192,64 @@ class Graph {
                         for (let node of object.nodes) {
                             if (!node.hover) continue;
 
-                            for (let triggerInput of node.triggerInputs) {
-                                if (!triggerInput.hover) continue;
+                            if (node.TriggerInputs) {
+                                for (let triggerInput of node.TriggerInputs) {
+                                    if (!triggerInput.hover) continue;
 
-                                let graphConnection = new GraphConnection({
-                                    input: object.item,
-                                    output: triggerInput,
-                                });
+                                    let graphConnection = new GraphConnection({
+                                        input: object.item,
+                                        output: triggerInput,
+                                    });
 
-                                object.connections.push(graphConnection);
+                                    object.connections.push(graphConnection);
 
-                                break;
+                                    break;
+                                }
                             }
 
-                            for (let triggerOutput of node.triggerOutputs) {
-                                if (!triggerOutput.hover) continue;
+                            if (node.TriggerOutputs) {
+                                for (let triggerOutput of node.TriggerOutputs) {
+                                    if (!triggerOutput.hover) continue;
 
-                                let graphConnection = new GraphConnection({
-                                    input: object.item,
-                                    output: triggerOutput,
-                                });
+                                    let graphConnection = new GraphConnection({
+                                        input: object.item,
+                                        output: triggerOutput,
+                                    });
 
-                                object.connections.push(graphConnection);
+                                    object.connections.push(graphConnection);
 
-                                break;
+                                    break;
+                                }
                             }
 
-                            for (let dataInput of node.dataInputs) {
-                                if (!dataInput.hover) continue;
+                            if (node.DataInputs) {
+                                for (let dataInput of node.DataInputs) {
+                                    if (!dataInput.hover) continue;
 
-                                let graphConnection = new GraphConnection({
-                                    input: object.item,
-                                    output: dataInput,
-                                });
+                                    let graphConnection = new GraphConnection({
+                                        input: object.item,
+                                        output: dataInput,
+                                    });
 
-                                object.connections.push(graphConnection);
+                                    object.connections.push(graphConnection);
 
-                                break;
+                                    break;
+                                }
                             }
 
-                            for (let dataOutput of node.dataOutputs) {
-                                if (!dataOutput.hover) continue;
+                            if (node.DataOutputs) {
+                                for (let dataOutput of node.DataOutputs) {
+                                    if (!dataOutput.hover) continue;
 
-                                let graphConnection = new GraphConnection({
-                                    input: object.item,
-                                    output: dataOutput,
-                                });
+                                    let graphConnection = new GraphConnection({
+                                        input: object.item,
+                                        output: dataOutput,
+                                    });
 
-                                object.connections.push(graphConnection);
+                                    object.connections.push(graphConnection);
 
-                                break;
+                                    break;
+                                }
                             }
 
                             break;
@@ -314,6 +314,68 @@ class Graph {
         });
 
         if (object.line) object.line.Draw(object.canvas);
+    }
+
+}
+
+class FunctionGraph extends Graph {
+
+    constructor(data = {}) {
+        super(data);
+        let object = this;
+        object.graphFunction = data.graphFunction ?? null;
+
+        object.nodes = data.nodes ?? [
+            new GraphNodeEnter({ caller: object.graphFunction, }),
+            new GraphNodeExit({ caller: object.graphFunction, })
+        ];
+    }
+
+    get TriggerInputs() {
+        return object.graphFunction.triggerInputs;
+    }
+
+    get TriggerOutputs() {
+        return object.graphFunction.triggerOutputs;
+    }
+
+    get DataInputs() {
+        return object.graphFunction.dataInputs;
+    }
+
+    get DataOutputs() {
+        return object.graphFunction.dataOutputs;
+    }
+
+}
+
+class MethodGraph extends Graph {
+
+    constructor(data = {}) {
+        super(data);
+        let object = this;
+        object.graphMethod = data.graphMethod ?? null;
+
+        object.nodes = data.nodes ?? [
+            new GraphNodeEnter({ caller: object.graphMethod, }),
+            new GraphNodeExit({ caller: object.graphMethod, })
+        ];
+    }
+
+    get TriggerInputs() {
+        return object.graphMethod.triggerInputs;
+    }
+
+    get TriggerOutputs() {
+        return object.graphMethod.triggerOutputs;
+    }
+
+    get DataInputs() {
+        return object.graphMethod.dataInputs;
+    }
+
+    get DataOutputs() {
+        return object.graphMethod.dataOutputs;
     }
 
 }

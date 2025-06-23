@@ -1,8 +1,7 @@
 class GraphFunction {
 
     static FromJson(data) {
-        console.log(data);
-        if (data.graph) data.graph = Graph.FromJson(data.graph);
+        if (data.graph) data.graph = FunctionGraph.FromJson(data.graph);
         return new GraphFunction(data);
     }
 
@@ -10,8 +9,13 @@ class GraphFunction {
         let object = this;
         object.id = data.id ?? guid();
         object.name = data.name ?? `Function`;
-
-        object.graph = data.graph ?? new Graph();
+        object.triggerInputs = data.triggerInputs ?? [];
+        object.triggerOutputs = data.triggerOutputs ?? [];
+        object.dataInputs = data.dataInputs ?? [];
+        object.dataOutputs = data.dataOutputs ?? [];
+        object.graph = data.graph ?? new FunctionGraph({
+            graphFunction: object,
+        });
     }
 
     toJson() {

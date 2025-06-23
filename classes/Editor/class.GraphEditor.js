@@ -99,7 +99,20 @@ class GraphEditor {
                             content: 'Nowa funkcja',
                             event: {
                                 click: function (event) {
-                                    let graphFunction = new GraphFunction();
+                                    let graphFunction = new GraphFunction({
+                                        triggerInputs: [
+                                            new GraphTrigger({ name: 'enter' }),
+                                        ],
+                                        triggerOutputs: [
+                                            new GraphTrigger({ name: 'exit' }),
+                                        ],
+                                        dataInputs: [
+                                            new GraphVariable({ name: 'request' }),
+                                        ],
+                                        dataOutputs: [
+                                            new GraphVariable({ name: 'response' }),
+                                        ],
+                                    });
                                     object.graphProject.graphFunctions.push(graphFunction);
                                     object.Selection = graphFunction;
                                 },
