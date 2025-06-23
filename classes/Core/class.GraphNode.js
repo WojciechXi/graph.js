@@ -27,6 +27,7 @@ class GraphNode {
         if (data.triggerInputs) {
             data.triggerInputs.forEach(function (graphTrigger) {
                 graphTrigger.graphNode = object;
+                graphTrigger.direction = 'input';
                 if (graphTrigger instanceof GraphTrigger) object.triggerInputs.push(graphTrigger);
                 else object.triggerInputs.push(GraphTrigger.FromJson(graphTrigger));
             });
@@ -35,6 +36,7 @@ class GraphNode {
         if (data.triggerOutputs) {
             data.triggerOutputs.forEach(function (graphTrigger) {
                 graphTrigger.graphNode = object;
+                graphTrigger.direction = 'output';
                 if (graphTrigger instanceof GraphTrigger) object.triggerOutputs.push(graphTrigger);
                 else object.triggerOutputs.push(GraphTrigger.FromJson(graphTrigger));
             });
@@ -43,6 +45,7 @@ class GraphNode {
         if (data.dataInputs) {
             data.dataInputs.forEach(function (graphVariable) {
                 graphVariable.graphNode = object;
+                graphVariable.direction = 'input';
                 if (graphVariable instanceof GraphVariable) object.dataInputs.push(graphVariable);
                 else object.dataInputs.push(GraphVariable.FromJson(graphVariable));
             });
@@ -51,6 +54,7 @@ class GraphNode {
         if (data.dataOutputs) {
             data.dataOutputs.forEach(function (graphVariable) {
                 graphVariable.graphNode = object;
+                graphVariable.direction = 'output';
                 if (graphVariable instanceof GraphVariable) object.dataOutputs.push(graphVariable);
                 else object.dataOutputs.push(GraphVariable.FromJson(graphVariable));
             });
@@ -233,9 +237,35 @@ class GraphNodeEnter extends GraphNode {
     constructor(data = {}) {
         super(data);
         let object = this;
-        object.callerId = data.callerId ?? null;
         object.caller = data.caller ?? null;
-        if (data.caller) object.callerId = data.caller.id;
+        object.callerId = object.caller ? object.caller.id : null;
+
+        if (object.caller) {
+            if (object.triggerOutputs.length == 0) {
+                object.caller.triggerInputs.forEach(function (trigger) {
+                    let graphTriggerData = trigger.toJson();
+                    graphTriggerData.id = null;
+                    graphTriggerData.graphNode = object;
+                    graphTriggerData.direction = 'output';
+
+                    let graphTrigger = GraphTrigger.FromJson(graphTriggerData);
+                    object.triggerOutputs.push(graphTrigger);
+                });
+            }
+
+            if (object.dataOutputs.length == 0) {
+                object.dataOutputs = [];
+                object.caller.dataInputs.forEach(function (data) {
+                    let graphVariableData = data.toJson();
+                    graphVariableData.id = null;
+                    graphVariableData.graphNode = object;
+                    graphVariableData.direction = 'output';
+
+                    let graphVariable = GraphVariable.FromJson(graphVariableData);
+                    object.dataOutputs.push(graphVariable);
+                });
+            }
+        }
     }
 
     GetCode(graph) {
@@ -272,17 +302,19 @@ class GraphNodeEnter extends GraphNode {
         let json = super.toJson();
         let object = this;
         json.callerId = object.caller ? object.caller.id : null;
+        json.triggerOutputs = object.triggerOutputs;
+        json.dataOutputs = object.dataOutputs;
         return json;
     }
 
     get TriggerOutputs() {
         let object = this;
-        return object.caller ? object.caller.triggerInputs : null;
+        return object.triggerOutputs;
     }
 
     get DataOutputs() {
         let object = this;
-        return object.caller ? object.caller.dataInputs : null;
+        return object.dataOutputs;
     }
 
 }
@@ -297,9 +329,35 @@ class GraphNodeReturn extends GraphNode {
     constructor(data = {}) {
         super(data);
         let object = this;
-        object.callerId = data.callerId ?? null;
         object.caller = data.caller ?? null;
-        if (data.caller) object.callerId = data.caller.id;
+        object.callerId = object.caller ? object.caller.id : null;
+
+        if (object.caller) {
+            if (object.triggerInputs.length == 0) {
+                object.caller.triggerOutputs.forEach(function (trigger) {
+                    let graphTriggerData = trigger.toJson();
+                    graphTriggerData.id = null;
+                    graphTriggerData.graphNode = object;
+                    graphTriggerData.direction = 'input';
+
+                    let graphTrigger = GraphTrigger.FromJson(graphTriggerData);
+                    object.triggerInputs.push(graphTrigger);
+                });
+            }
+
+            if (object.dataInputs.length == 0) {
+                object.dataInputs = [];
+                object.caller.dataOutputs.forEach(function (data) {
+                    let graphVariableData = data.toJson();
+                    graphVariableData.id = null;
+                    graphVariableData.graphNode = object;
+                    graphVariableData.direction = 'input';
+
+                    let graphVariable = GraphVariable.FromJson(graphVariableData);
+                    object.dataInputs.push(graphVariable);
+                });
+            }
+        }
     }
 
     GetCode(graph) {
@@ -332,17 +390,19 @@ class GraphNodeReturn extends GraphNode {
         let json = super.toJson();
         let object = this;
         json.callerId = object.caller ? object.caller.id : null;
+        json.triggerInputs = object.triggerInputs;
+        json.dataInputs = object.dataInputs;
         return json;
     }
 
     get TriggerInputs() {
         let object = this;
-        return object.caller ? object.caller.triggerOutputs : null;
+        return object.triggerInputs;
     }
 
     get DataInputs() {
         let object = this;
-        return object.caller ? object.caller.dataOutputs : null;
+        return object.dataInputs;
     }
 
 }
@@ -392,8 +452,8 @@ class GraphNodeIf extends GraphNode {
             new GraphTrigger({ name: 'enter', }),
         ];
         if (!object.triggerOutputs.length) object.triggerOutputs = [
-            new GraphTrigger({ name: 'true', }),
-            new GraphTrigger({ name: 'false', }),
+            new GraphTrigger({ name: 'true', direction: 'output', }),
+            new GraphTrigger({ name: 'false', direction: 'output', }),
         ];
         if (!object.dataInputs.length) object.dataInputs = [
             new GraphVariable({ name: 'predicate', type: 'bool', value: false }),
@@ -553,11 +613,11 @@ class GraphNodeFor extends GraphNode {
             new GraphVariable({ name: 'step', type: 'int', value: 1 }),
         ];
         if (!object.triggerOutputs.length) object.triggerOutputs = [
-            new GraphTrigger({ name: 'exit', }),
-            new GraphTrigger({ name: 'body', }),
+            new GraphTrigger({ name: 'exit', direction: 'output', }),
+            new GraphTrigger({ name: 'body', direction: 'output', }),
         ];
         if (!object.dataOutputs.length) object.dataOutputs = [
-            new GraphVariable({ name: 'index', type: 'int' }),
+            new GraphVariable({ name: 'index', direction: 'output', type: 'int' }),
         ];
     }
 
@@ -662,12 +722,12 @@ class GraphNodeForEach extends GraphNode {
             new GraphVariable({ name: 'target', type: 'object', value: null }),
         ];
         if (!object.triggerOutputs.length) object.triggerOutputs = [
-            new GraphTrigger({ name: 'exit', }),
-            new GraphTrigger({ name: 'body', }),
+            new GraphTrigger({ name: 'exit', direction: 'output', }),
+            new GraphTrigger({ name: 'body', direction: 'output', }),
         ];
         if (!object.dataOutputs.length) object.dataOutputs = [
-            new GraphVariable({ name: 'item', }),
-            new GraphVariable({ name: 'index', }),
+            new GraphVariable({ name: 'item', direction: 'output', }),
+            new GraphVariable({ name: 'index', direction: 'output', }),
         ];
     }
 
@@ -729,8 +789,8 @@ class GraphNodeWhile extends GraphNode {
             new GraphVariable({ name: 'predicate', type: 'bool', value: false }),
         ];
         if (!object.triggerOutputs.length) object.triggerOutputs = [
-            new GraphTrigger({ name: 'exit', }),
-            new GraphTrigger({ name: 'body', }),
+            new GraphTrigger({ name: 'exit', direction: 'output', }),
+            new GraphTrigger({ name: 'body', direction: 'output', }),
         ];
     }
 
@@ -823,7 +883,7 @@ class GraphNodeThis extends GraphNode {
         super(data);
         let object = this;
         if (!object.dataOutputs.length) object.dataOutputs = [
-            new GraphVariable({ name: 'this', type: 'object', value: null }),
+            new GraphVariable({ name: 'this', direction: 'output', type: 'object', value: null }),
         ];
     }
 
@@ -861,7 +921,7 @@ class GraphNodeGet extends GraphNode {
             new GraphVariable({ name: 'member', type: 'string', value: 'variable' }),
         ];
         if (!object.dataOutputs.length) object.dataOutputs = [
-            new GraphVariable({ name: 'value', type: 'mixed' }),
+            new GraphVariable({ name: 'value', direction: 'output', type: 'mixed' }),
         ];
     }
 
@@ -929,10 +989,10 @@ class GraphNodeSet extends GraphNode {
         super(data);
         let object = this;
         if (!object.triggerInputs.length) object.triggerInputs = [
-            new GraphTrigger({ name: 'enter' })
+            new GraphTrigger({ name: 'enter', })
         ];
         if (!object.triggerOutputs.length) object.triggerOutputs = [
-            new GraphTrigger({ name: 'exit' })
+            new GraphTrigger({ name: 'exit', direction: 'output', })
         ];
         if (!object.dataInputs.length) object.dataInputs = [
             new GraphVariable({ name: 'target', type: 'object', value: null }),
@@ -940,7 +1000,7 @@ class GraphNodeSet extends GraphNode {
             new GraphVariable({ name: 'new value', type: 'mixed', value: '' }),
         ];
         if (!object.dataOutputs.length) object.dataOutputs = [
-            new GraphVariable({ name: 'value', type: 'mixed' }),
+            new GraphVariable({ name: 'value', direction: 'output', type: 'mixed' }),
         ];
     }
 
@@ -1060,7 +1120,7 @@ class GraphNodeFunction extends GraphNode {
             new GraphVariable({ name: 'function', type: 'object', value: null }),
         ];
         if (!object.dataOutputs.length) object.dataOutputs = [
-            new GraphTrigger({ name: 'exit', }),
+            new GraphTrigger({ name: 'exit', direction: 'output', }),
         ];
     }
 
@@ -1107,7 +1167,7 @@ class GraphNodeMethod extends GraphNode {
         ];
 
         if (!object.dataOutputs.length) object.dataOutputs = [
-            new GraphTrigger({ name: 'exit', }),
+            new GraphTrigger({ name: 'exit', direction: 'output', }),
         ];
     }
 
@@ -1164,7 +1224,7 @@ class GraphNodeEquals extends GraphNode {
             new GraphVariable({ name: 'b', type: 'mixed', value: null }),
         ];
         if (!object.dataOutputs.length) object.dataOutputs = [
-            new GraphVariable({ name: 'equals', type: 'bool', value: false }),
+            new GraphVariable({ name: 'equals', direction: 'output', type: 'bool', value: false }),
         ];
     }
 
@@ -1230,7 +1290,7 @@ class GraphNodeMath extends GraphNode {
             new GraphVariable({ name: '0', type: 'mixed', value: null }),
         ];
         if (!object.dataOutputs.length) object.dataOutputs = [
-            new GraphVariable({ name: 'value', type: 'mixed', value: null }),
+            new GraphVariable({ name: 'value', direction: 'output', type: 'mixed', value: null }),
         ];
     }
 
@@ -1256,7 +1316,7 @@ class GraphNodeString extends GraphNode {
         let object = this;
         object.value = data.value ?? '';
         if (!object.dataOutputs.length) object.dataOutputs = [
-            new GraphVariable({ name: 'value', type: 'string', value: '' }),
+            new GraphVariable({ name: 'value', direction: 'output', type: 'string', value: '' }),
         ];
     }
 

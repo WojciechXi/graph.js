@@ -9,6 +9,7 @@ class GraphVariable {
         object.id = data.id ?? guid();
 
         object.name = data.name ?? 'Variable';
+        object.direction = data.direction ?? 'input';
         object.type = data.type ?? 'mixed';
         object.value = data.value ?? '';
 

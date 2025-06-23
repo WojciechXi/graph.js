@@ -8,6 +8,7 @@ class GraphTrigger {
         let object = this;
         object.id = data.id ?? guid();
         object.name = data.name ?? 'Trigger';
+        object.direction = data.direction ?? 'input';
         object.type = data.type ?? 'mixed';
         object.value = data.value ?? '';
 

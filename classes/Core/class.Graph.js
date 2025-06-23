@@ -179,16 +179,40 @@ class Graph {
 
                                 return object.Render();
                             } else {
-                                object.item = node;
-                                object.drag = true;
-                                object.originItem = {
-                                    x: node.x,
-                                    y: node.y,
+                                if (event.ctrlKey) {
+                                    let newGraphNodeData = node.toJson();
+                                    newGraphNodeData.id = null;
+                                    newGraphNodeData.triggerInputs = null;
+                                    newGraphNodeData.triggerOutputs = null;
+                                    newGraphNodeData.dataInputs = null;
+                                    newGraphNodeData.dataOutputs = null;
+                                    newGraphNodeData.graph = object;
+                                    let newGraphNode = GraphNode.FromJson(newGraphNodeData);
+
+                                    object.nodes.push(newGraphNode);
+
+                                    object.item = newGraphNode;
+                                    object.drag = true;
+                                    object.originItem = {
+                                        x: node.x,
+                                        y: node.y,
+                                    }
+
+                                    GraphEditor.Instance.Selection = object.item;
+
+                                    return object.Render();
+                                } else {
+                                    object.item = node;
+                                    object.drag = true;
+                                    object.originItem = {
+                                        x: node.x,
+                                        y: node.y,
+                                    }
+
+                                    GraphEditor.Instance.Selection = object.item;
+
+                                    return object.Render();
                                 }
-
-                                GraphEditor.Instance.Selection = object.item;
-
-                                return object.Render();
                             }
                         }
                     }
@@ -234,63 +258,71 @@ class Graph {
                         for (let node of object.nodes) {
                             if (!node.hover) continue;
 
-                            if (node.TriggerInputs) {
-                                for (let triggerInput of node.TriggerInputs) {
-                                    if (!triggerInput.hover) continue;
+                            if (object.item instanceof GraphTrigger) {
+                                if (object.item.direction == 'output') {
+                                    if (node.TriggerInputs) {
+                                        for (let triggerInput of node.TriggerInputs) {
+                                            if (!triggerInput.hover) continue;
 
-                                    let graphConnection = new GraphConnection({
-                                        input: object.item,
-                                        output: triggerInput,
-                                    });
+                                            let graphConnection = new GraphConnection({
+                                                input: object.item,
+                                                output: triggerInput,
+                                            });
 
-                                    object.connections.push(graphConnection);
+                                            object.connections.push(graphConnection);
 
-                                    break;
+                                            break;
+                                        }
+                                    }
+                                } else if (object.item.direction == 'input') {
+                                    if (node.TriggerOutputs) {
+                                        for (let triggerOutput of node.TriggerOutputs) {
+                                            if (!triggerOutput.hover) continue;
+
+                                            let graphConnection = new GraphConnection({
+                                                input: object.item,
+                                                output: triggerOutput,
+                                            });
+
+                                            object.connections.push(graphConnection);
+
+                                            break;
+                                        }
+                                    }
                                 }
                             }
 
-                            if (node.TriggerOutputs) {
-                                for (let triggerOutput of node.TriggerOutputs) {
-                                    if (!triggerOutput.hover) continue;
+                            if (object.item instanceof GraphVariable) {
+                                if (object.item.direction == 'output') {
+                                    if (node.DataInputs) {
+                                        for (let dataInput of node.DataInputs) {
+                                            if (!dataInput.hover) continue;
 
-                                    let graphConnection = new GraphConnection({
-                                        input: object.item,
-                                        output: triggerOutput,
-                                    });
+                                            let graphConnection = new GraphConnection({
+                                                input: object.item,
+                                                output: dataInput,
+                                            });
 
-                                    object.connections.push(graphConnection);
+                                            object.connections.push(graphConnection);
 
-                                    break;
-                                }
-                            }
+                                            break;
+                                        }
+                                    }
+                                } else if (object.item.direction == 'input') {
+                                    if (node.DataOutputs) {
+                                        for (let dataOutput of node.DataOutputs) {
+                                            if (!dataOutput.hover) continue;
 
-                            if (node.DataInputs) {
-                                for (let dataInput of node.DataInputs) {
-                                    if (!dataInput.hover) continue;
+                                            let graphConnection = new GraphConnection({
+                                                input: object.item,
+                                                output: dataOutput,
+                                            });
 
-                                    let graphConnection = new GraphConnection({
-                                        input: object.item,
-                                        output: dataInput,
-                                    });
+                                            object.connections.push(graphConnection);
 
-                                    object.connections.push(graphConnection);
-
-                                    break;
-                                }
-                            }
-
-                            if (node.DataOutputs) {
-                                for (let dataOutput of node.DataOutputs) {
-                                    if (!dataOutput.hover) continue;
-
-                                    let graphConnection = new GraphConnection({
-                                        input: object.item,
-                                        output: dataOutput,
-                                    });
-
-                                    object.connections.push(graphConnection);
-
-                                    break;
+                                            break;
+                                        }
+                                    }
                                 }
                             }
 
