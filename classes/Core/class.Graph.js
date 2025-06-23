@@ -16,8 +16,6 @@ class Graph {
         let object = this;
         object.id = guid();
 
-        object.localGraphVariables = data.localGraphVariables ?? [];
-
         object.nodes = data.nodes ?? [];
         object.connections = data.connections ?? [];
     }
@@ -50,9 +48,20 @@ class Graph {
     get Code() {
         let object = this;
         let parts = [];
-        object.nodes.forEach(function (node, index) {
-            parts.push(node.Code);
-        });
+
+        let enterNode = null;
+        for (let node of object.nodes) {
+            if (node instanceof GraphNodeEnter) {
+                enterNode = node;
+                break;
+            }
+        }
+
+        parts.push(enterNode.Code);
+
+        // object.nodes.forEach(function (node, index) {
+        //     parts.push(node.Code);
+        // });
         return parts.join(`\n`)
     }
 
@@ -327,7 +336,7 @@ class FunctionGraph extends Graph {
 
         object.nodes = data.nodes ?? [
             new GraphNodeEnter({ caller: object.graphFunction, }),
-            new GraphNodeExit({ caller: object.graphFunction, })
+            new GraphNodeReturn({ caller: object.graphFunction, })
         ];
     }
 
@@ -358,7 +367,7 @@ class MethodGraph extends Graph {
 
         object.nodes = data.nodes ?? [
             new GraphNodeEnter({ caller: object.graphMethod, }),
-            new GraphNodeExit({ caller: object.graphMethod, })
+            new GraphNodeReturn({ caller: object.graphMethod, })
         ];
     }
 

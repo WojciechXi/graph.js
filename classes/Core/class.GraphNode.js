@@ -206,9 +206,18 @@ class GraphNodeEnter extends GraphNode {
         return object.caller ? object.caller.dataInputs : null;
     }
 
+    get Code() {
+        let object = this;
+        let parts = [];
+        object.DataOutputs.forEach(function (dataOutput) {
+            parts.push(`let ${dataOutput.name} = '${dataOutput.value}';`);
+        });
+        return parts.join(`\n`)
+    }
+
 }
 
-class GraphNodeExit extends GraphNode {
+class GraphNodeReturn extends GraphNode {
 
     static {
         GraphNode.nodes.push(this);
@@ -232,7 +241,14 @@ class GraphNodeExit extends GraphNode {
     }
 
     get Code() {
-        return `return;`;
+        let object = this;
+        let parts = [];
+        parts.push(`return {`);
+        object.DataInputs.forEach(function (dataInput) {
+            parts.push(`${dataInput.name}: '${dataInput.value}',`);
+        });
+        parts.push(`}`);
+        return parts.join(`\n`)
     }
 
 }
