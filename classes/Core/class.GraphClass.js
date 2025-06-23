@@ -1,14 +1,6 @@
 class GraphClass {
 
     static FromJson(data) {
-        data.graphVariables.forEach(function (graphClass, index) {
-            data.graphVariables[index] = GraphClass.FromJson(graphClass);
-        });
-
-        data.graphMethods.forEach(function (graphFunction, index) {
-            data.graphMethods[index] = GraphFunction.FromJson(graphFunction);
-        });
-
         return new GraphClass(data);
     }
 
@@ -18,8 +10,15 @@ class GraphClass {
         object.name = data.name ?? `Class`;
         object.parent = data.parent ?? null;
 
-        object.graphVariables = data.graphVariables ?? [];
-        object.graphMethods = data.graphMethods ?? [];
+        object.graphVariables = [];
+        object.graphMethods = [];
+
+        data.graphVariables.forEach(function (graphVariable) {
+
+        });
+        data.graphMethods.forEach(function (graphMethod) {
+
+        });
     }
 
     toJson() {

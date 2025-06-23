@@ -15,6 +15,8 @@ class GraphNode {
 
         object.x = data.x ?? 0;
         object.y = data.y ?? 0;
+
+        object.graph = data.graph ?? null;
     }
 
     get TriggerInputs() {
@@ -193,7 +195,16 @@ class GraphNodeEnter extends GraphNode {
     constructor(data = {}) {
         super(data);
         let object = this;
+        object.callerId = data.callerId ?? null;
         object.caller = data.caller ?? null;
+        if (data.caller) object.callerId = data.caller.id;
+    }
+
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.callerId = object.callerId;
+        return json;
     }
 
     get TriggerOutputs() {
@@ -227,7 +238,16 @@ class GraphNodeReturn extends GraphNode {
     constructor(data = {}) {
         super(data);
         let object = this;
+        object.callerId = data.callerId ?? null;
         object.caller = data.caller ?? null;
+        if (data.caller) object.callerId = data.caller.id;
+    }
+
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.callerId = object.callerId;
+        return json;
     }
 
     get TriggerInputs() {
@@ -266,6 +286,13 @@ class GraphNodeBreak extends GraphNode {
         object.triggerInputs = [new GraphTrigger({ name: 'enter' })];
     }
 
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.triggerInputs = object.triggerInputs;
+        return json;
+    }
+
     get TriggerInputs() {
         let object = this;
         return object.triggerInputs;
@@ -297,6 +324,15 @@ class GraphNodeIf extends GraphNode {
         object.dataInputs = [
             new GraphVariable({ name: 'predicate', type: 'bool', value: false }),
         ];
+    }
+
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.triggerInputs = object.triggerInputs;
+        json.triggerOutputs = object.triggerOutputs;
+        json.dataInputs = object.dataInputs;
+        return json;
     }
 
     get TriggerInputs() {
@@ -331,6 +367,13 @@ class GraphNodeSwitch extends GraphNode {
         ];
     }
 
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.triggerInputs = object.triggerInputs;
+        return json;
+    }
+
     get TriggerInputs() {
         let object = this;
         return object.triggerInputs;
@@ -363,6 +406,16 @@ class GraphNodeFor extends GraphNode {
         object.dataOutputs = [
             new GraphVariable({ name: 'index', type: 'int' }),
         ];
+    }
+
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.triggerInputs = object.triggerInputs;
+        json.dataInputs = object.dataInputs;
+        json.triggerOutputs = object.triggerOutputs;
+        json.dataOutputs = object.dataOutputs;
+        return json;
     }
 
     get TriggerInputs() {
@@ -421,6 +474,16 @@ class GraphNodeForEach extends GraphNode {
         ];
     }
 
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.triggerInputs = object.triggerInputs;
+        json.dataInputs = object.dataInputs;
+        json.triggerOutputs = object.triggerOutputs;
+        json.dataOutputs = object.dataOutputs;
+        return json;
+    }
+
     get TriggerInputs() {
         let object = this;
         return object.triggerInputs;
@@ -474,6 +537,15 @@ class GraphNodeWhile extends GraphNode {
         ];
     }
 
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.triggerInputs = object.triggerInputs;
+        json.dataInputs = object.dataInputs;
+        json.triggerOutputs = object.triggerOutputs;
+        return json;
+    }
+
     get TriggerInputs() {
         let object = this;
         return object.triggerInputs;
@@ -515,6 +587,13 @@ class GraphNodeThis extends GraphNode {
         ];
     }
 
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.dataOutputs = object.dataOutputs;
+        return json;
+    }
+
     get DataOutputs() {
         let object = this;
         return object.dataOutputs;
@@ -546,6 +625,14 @@ class GraphNodeGet extends GraphNode {
         object.dataOutputs = [
             new GraphVariable({ name: 'value', type: 'mixed' }),
         ];
+    }
+
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.dataInputs = object.dataInputs;
+        json.dataOutputs = object.dataOutputs;
+        return json;
     }
 
     get DataInputs() {
@@ -584,6 +671,16 @@ class GraphNodeSet extends GraphNode {
         object.dataOutputs = [
             new GraphVariable({ name: 'value', type: 'mixed' }),
         ];
+    }
+
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.triggerInputs = object.triggerInputs;
+        json.triggerOutputs = object.triggerOutputs;
+        json.dataInputs = object.dataInputs;
+        json.dataOutputs = object.dataOutputs;
+        return json;
     }
 
     get TriggerInputs() {
@@ -626,6 +723,14 @@ class GraphNodeFunction extends GraphNode {
         ];
     }
 
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.dataInputs = object.dataInputs;
+        json.dataOutputs = object.dataOutputs;
+        return json;
+    }
+
     get DataInputs() {
         let object = this;
         return object.dataInputs;
@@ -655,6 +760,16 @@ class GraphNodeMethod extends GraphNode {
         object.dataOutputs = [
             new GraphTrigger({ name: 'exit', }),
         ];
+    }
+
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.triggerInputs = object.triggerInputs;
+        json.triggerOutputs = object.triggerOutputs;
+        json.dataInputs = object.dataInputs;
+        json.dataOutputs = object.dataOutputs;
+        return json;
     }
 
     get TriggerInputs() {
@@ -690,6 +805,14 @@ class GraphNodeMath extends GraphNode {
         object.dataOutputs = [
             new GraphVariable({ name: 'value', type: 'mixed', value: null }),
         ];
+    }
+
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.dataInputs = object.dataInputs;
+        json.dataOutputs = object.dataOutputs;
+        return json;
     }
 
 }

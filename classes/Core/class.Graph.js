@@ -1,23 +1,15 @@
 class Graph {
 
     static FromJson(data = {}) {
-        data.nodes.forEach(function (graphNode, index) {
-            data.nodes[index] = GraphNode.FromJson(graphNode);
-        });
-
-        data.connections.forEach(function (graphConnection, index) {
-            data.connections[index] = GraphConnection.FromJson(graphConnection);
-        });
-
         return new Graph(data);
     }
 
     constructor(data = {}) {
         let object = this;
-        object.id = guid();
+        object.id = data.id ?? guid();
 
-        object.nodes = data.nodes ?? [];
-        object.connections = data.connections ?? [];
+        object.nodes = [];
+        object.connections = [];
     }
 
     get TriggerInputs() {
@@ -334,10 +326,28 @@ class FunctionGraph extends Graph {
         let object = this;
         object.graphFunction = data.graphFunction ?? null;
 
-        object.nodes = data.nodes ?? [
-            new GraphNodeEnter({ caller: object.graphFunction, }),
-            new GraphNodeReturn({ caller: object.graphFunction, })
-        ];
+        if (data.nodes) {
+            data.nodes.forEach(function (node) {
+                node.graph = object;
+                node.caller = object.graphFunction;
+                console.log(node.caller);
+                if (node instanceof GraphNode) object.nodes.push(node);
+                else object.nodes.push(GraphNode.FromJson(node));
+            });
+        } else {
+            object.nodes = data.nodes ?? [
+                new GraphNodeEnter({ caller: object.graphFunction, }),
+                new GraphNodeReturn({ caller: object.graphFunction, })
+            ];
+        }
+
+        if (data.connections) {
+            data.connections.forEach(function (connection) {
+                connection.graph = object;
+                if (connection instanceof GraphConnection) object.connections.push(connection);
+                else object.connections.push(GraphConnection.FromJson(connection, object));
+            });
+        }
     }
 
     get TriggerInputs() {
@@ -365,10 +375,28 @@ class MethodGraph extends Graph {
         let object = this;
         object.graphMethod = data.graphMethod ?? null;
 
-        object.nodes = data.nodes ?? [
-            new GraphNodeEnter({ caller: object.graphMethod, }),
-            new GraphNodeReturn({ caller: object.graphMethod, })
-        ];
+        if (data.nodes) {
+            data.nodes.forEach(function (node) {
+                node.graph = object;
+                node.caller = object.graphMethod;
+                console.log(node.caller);
+                if (node instanceof GraphNode) object.nodes.push(node);
+                else object.nodes.push(GraphNode.FromJson(node));
+            });
+        } else {
+            object.nodes = data.nodes ?? [
+                new GraphNodeEnter({ caller: object.graphMethod, }),
+                new GraphNodeReturn({ caller: object.graphMethod, })
+            ];
+        }
+
+        if (data.connections) {
+            data.connections.forEach(function (connection) {
+                connection.graph = object;
+                if (connection instanceof GraphConnection) object.connections.push(connection);
+                else object.connections.push(GraphConnection.FromJson(connection, object));
+            });
+        }
     }
 
     get TriggerInputs() {

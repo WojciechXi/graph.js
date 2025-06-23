@@ -1,7 +1,6 @@
 class GraphFunction {
 
     static FromJson(data) {
-        if (data.graph) data.graph = FunctionGraph.FromJson(data.graph);
         return new GraphFunction(data);
     }
 
@@ -9,13 +8,21 @@ class GraphFunction {
         let object = this;
         object.id = data.id ?? guid();
         object.name = data.name ?? `Function`;
+
         object.triggerInputs = data.triggerInputs ?? [];
         object.triggerOutputs = data.triggerOutputs ?? [];
         object.dataInputs = data.dataInputs ?? [];
         object.dataOutputs = data.dataOutputs ?? [];
-        object.graph = data.graph ?? new FunctionGraph({
-            graphFunction: object,
-        });
+
+        if (data.graph) {
+            data.graph.graphFunction = object;
+            if (data.graph instanceof FunctionGraph) object.graph = data.graph;
+            else object.graph = FunctionGraph.FromJson(data.graph);
+        } else {
+            object.graph = new FunctionGraph({
+                graphFunction: object,
+            });
+        }
     }
 
     toJson() {

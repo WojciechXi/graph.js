@@ -1,22 +1,31 @@
 class GraphProject {
 
     static FromJson(data) {
-        data.graphClasses.forEach(function (graphClass, index) {
-            data.graphClasses[index] = GraphClass.FromJson(graphClass);
-        });
-
-        data.graphFunctions.forEach(function (graphFunction, index) {
-            data.graphFunctions[index] = GraphFunction.FromJson(graphFunction);
-        });
-
         return new GraphProject(data);
     }
 
     constructor(data = {}) {
         let object = this;
         object.id = data.id ?? guid();
-        object.graphClasses = data.graphClasses ?? [];
-        object.graphFunctions = data.graphFunctions ?? [];
+
+        object.graphClasses = [];
+        object.graphFunctions = [];
+
+        if (data.graphClasses) {
+            data.graphClasses.forEach(function (graphClass) {
+                graphClass.graphProject = object;
+                if (graphClass instanceof GraphClass) object.graphClasses.push(graphClass);
+                else object.graphClasses.push(GraphClass.FromJson(graphClass));
+            })
+        }
+
+        if (data.graphFunctions) {
+            data.graphFunctions.forEach(function (graphFunction) {
+                graphFunction.graphProject = object;
+                if (graphFunction instanceof GraphFunction) object.graphFunctions.push(graphFunction);
+                else object.graphFunctions.push(GraphFunction.FromJson(graphFunction));
+            })
+        }
     }
 
     toJson() {
