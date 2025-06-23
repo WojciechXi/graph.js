@@ -141,6 +141,8 @@ class Graph {
                                     y: node.y,
                                 }
 
+                                GraphEditor.Instance.Selection = object.item;
+
                                 return object.Render();
                             }
                         }

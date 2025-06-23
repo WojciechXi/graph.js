@@ -18,6 +18,7 @@ class GraphEditorInspector {
             contentLoop: function (value, index, property) {
                 if (value instanceof Function) return null;
                 if (value instanceof Array) return null;
+                if (value instanceof Object) return null;
                 return el({
                     class: ['row'],
                     content: [

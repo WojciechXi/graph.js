@@ -2,6 +2,8 @@ class GraphEditor {
 
     constructor(data = {}) {
         let object = this;
+        GraphEditor.Instance = object;
+
         object.id = guid();
         object.graphProject = data.graphProject ?? new GraphProject();
 
