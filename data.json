@@ -1,0 +1,39 @@
+{
+     "id": "235b814b-edd8-40fa-a905-10f0e2fb7c3c",
+     "graphClasses": [],
+     "graphFunctions": [
+          {
+               "id": "80dc1b50-e131-41ec-a222-d87ae2b8a41d",
+               "name": "Function",
+               "graph": {
+                    "id": "bd8ded0a-c6aa-4536-acd3-7da455103142",
+                    "nodes": [
+                         {
+                              "type": "GraphNodeEnter",
+                              "id": "f4c4b997-c994-4ca8-a182-7635502da0f5",
+                              "x": -254,
+                              "y": -1
+                         },
+                         {
+                              "type": "GraphNodeExit",
+                              "id": "9bf93157-3d91-4766-b0da-f6641106e531",
+                              "x": 0,
+                              "y": 0
+                         }
+                    ],
+                    "connections": [
+                         {
+                              "id": "4e47c592-6b59-402b-84fb-ee0510399513",
+                              "inputId": null,
+                              "outputId": null
+                         },
+                         {
+                              "id": "1d963073-d39a-4dc5-964f-b7da1204518f",
+                              "inputId": null,
+                              "outputId": null
+                         }
+                    ]
+               }
+          }
+     ]
+}
