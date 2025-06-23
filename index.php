@@ -18,6 +18,7 @@
     <script src="./classes/Canvas/class.Rect.js"></script>
     <script src="./classes/Canvas/class.RoundRect.js"></script>
     <script src="./classes/Canvas/class.Textfield.js"></script>
+    <script src="./classes/Canvas/class.Button.js"></script>
     <script src="./classes/Canvas/class.Canvas.js"></script>
 
     <script src="./classes/Core/class.GraphVariable.js"></script>
