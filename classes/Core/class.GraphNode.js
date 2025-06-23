@@ -183,30 +183,6 @@ class GraphNode {
 
 }
 
-class GraphNodeBreak extends GraphNode {
-
-    static {
-        GraphNode.nodes.push(this);
-        GraphNode.types[this.name] = this;
-    }
-
-    constructor(data = {}) {
-        super(data);
-        let object = this;
-        object.triggerInputs = [new GraphTrigger({ name: 'enter' })];
-    }
-
-    get TriggerInputs() {
-        let object = this;
-        return object.triggerInputs;
-    }
-
-    get Code() {
-        return `break;`;
-    }
-
-}
-
 class GraphNodeEnter extends GraphNode {
 
     static {
@@ -261,6 +237,30 @@ class GraphNodeExit extends GraphNode {
 
 }
 
+class GraphNodeBreak extends GraphNode {
+
+    static {
+        GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
+    }
+
+    constructor(data = {}) {
+        super(data);
+        let object = this;
+        object.triggerInputs = [new GraphTrigger({ name: 'enter' })];
+    }
+
+    get TriggerInputs() {
+        let object = this;
+        return object.triggerInputs;
+    }
+
+    get Code() {
+        return `break;`;
+    }
+
+}
+
 class GraphNodeIf extends GraphNode {
 
     static {
@@ -269,18 +269,18 @@ class GraphNodeIf extends GraphNode {
     }
 
     constructor(data = {}) {
-        data.triggerInputs = [
+        super(data);
+        let object = this;
+        object.triggerInputs = [
             new GraphTrigger({ name: 'enter', }),
         ];
-        data.triggerOutputs = [
+        object.triggerOutputs = [
             new GraphTrigger({ name: 'true', }),
             new GraphTrigger({ name: 'false', }),
         ];
-        data.dataInputs = [
+        object.dataInputs = [
             new GraphVariable({ name: 'predicate', type: 'bool', value: false }),
         ];
-        super(data);
-        let object = this;
     }
 
     get TriggerInputs() {
@@ -308,11 +308,11 @@ class GraphNodeSwitch extends GraphNode {
     }
 
     constructor(data = {}) {
-        data.triggerInputs = [
-            new GraphTrigger({ name: 'enter', }),
-        ];
         super(data);
         let object = this;
+        object.triggerInputs = [
+            new GraphTrigger({ name: 'enter', }),
+        ];
     }
 
     get TriggerInputs() {
@@ -330,23 +330,23 @@ class GraphNodeFor extends GraphNode {
     }
 
     constructor(data = {}) {
-        data.triggerInputs = [
+        super(data);
+        let object = this;
+        object.triggerInputs = [
             new GraphTrigger({ name: 'enter', }),
         ];
-        data.dataInputs = [
+        object.dataInputs = [
             new GraphVariable({ name: 'first', type: 'int', value: 0 }),
             new GraphVariable({ name: 'last', type: 'int', value: 10 }),
             new GraphVariable({ name: 'step', type: 'int', value: 1 }),
         ];
-        data.triggerOutputs = [
+        object.triggerOutputs = [
             new GraphTrigger({ name: 'exit', }),
             new GraphTrigger({ name: 'body', }),
         ];
-        data.dataOutputs = [
+        object.dataOutputs = [
             new GraphVariable({ name: 'index', type: 'int' }),
         ];
-        super(data);
-        let object = this;
     }
 
     get TriggerInputs() {
@@ -387,22 +387,42 @@ class GraphNodeForEach extends GraphNode {
     }
 
     constructor(data = {}) {
-        data.triggerInputs = [
+        super(data);
+        let object = this;
+        object.triggerInputs = [
             new GraphTrigger({ name: 'enter', }),
         ];
-        data.dataInputs = [
+        object.dataInputs = [
             new GraphVariable({ name: 'target', type: 'object', value: null }),
         ];
-        data.triggerOutputs = [
+        object.triggerOutputs = [
             new GraphTrigger({ name: 'exit', }),
             new GraphTrigger({ name: 'body', }),
         ];
-        data.dataOutputs = [
+        object.dataOutputs = [
             new GraphVariable({ name: 'item', }),
             new GraphVariable({ name: 'index', }),
         ];
-        super(data);
+    }
+
+    get TriggerInputs() {
         let object = this;
+        return object.triggerInputs;
+    }
+
+    get TriggerOutputs() {
+        let object = this;
+        return object.triggerOutputs;
+    }
+
+    get DataInputs() {
+        let object = this;
+        return object.dataInputs;
+    }
+
+    get DataOutputs() {
+        let object = this;
+        return object.dataOutputs;
     }
 
     get Code() {
@@ -424,18 +444,33 @@ class GraphNodeWhile extends GraphNode {
     }
 
     constructor(data = {}) {
-        data.triggerInputs = [
+        super(data);
+        let object = this;
+        object.triggerInputs = [
             new GraphTrigger({ name: 'enter', }),
         ];
-        data.dataInputs = [
+        object.dataInputs = [
             new GraphVariable({ name: 'predicate', type: 'bool', value: false }),
         ];
-        data.triggerOutputs = [
+        object.triggerOutputs = [
             new GraphTrigger({ name: 'exit', }),
             new GraphTrigger({ name: 'body', }),
         ];
-        super(data);
+    }
+
+    get TriggerInputs() {
         let object = this;
+        return object.triggerInputs;
+    }
+
+    get TriggerOutputs() {
+        let object = this;
+        return object.triggerOutputs;
+    }
+
+    get DataInputs() {
+        let object = this;
+        return object.dataInputs;
     }
 
     get Code() {
@@ -457,11 +492,16 @@ class GraphNodeThis extends GraphNode {
     }
 
     constructor(data = {}) {
-        data.dataOutputs = [
-            new GraphVariable({ name: 'this', type: 'object', value: null }),
-        ];
         super(data);
         let object = this;
+        object.dataOutputs = [
+            new GraphVariable({ name: 'this', type: 'object', value: null }),
+        ];
+    }
+
+    get DataOutputs() {
+        let object = this;
+        return object.dataOutputs;
     }
 
     get Code() {
@@ -481,15 +521,25 @@ class GraphNodeGet extends GraphNode {
     }
 
     constructor(data = {}) {
-        data.dataInputs = [
+        super(data);
+        let object = this;
+        object.dataInputs = [
             new GraphVariable({ name: 'target', type: 'object', value: null }),
             new GraphVariable({ name: 'member', type: 'string', value: 'variable' }),
         ];
-        data.dataOutputs = [
+        object.dataOutputs = [
             new GraphVariable({ name: 'value', type: 'mixed' }),
         ];
-        super(data);
+    }
+
+    get DataInputs() {
         let object = this;
+        return object.dataInputs;
+    }
+
+    get DataOutputs() {
+        let object = this;
+        return object.dataOutputs;
     }
 
 }
@@ -502,22 +552,42 @@ class GraphNodeSet extends GraphNode {
     }
 
     constructor(data = {}) {
-        data.triggerInputs = [
+        super(data);
+        let object = this;
+        object.triggerInputs = [
             new GraphTrigger({ name: 'enter' })
         ];
-        data.triggerOutputs = [
+        object.triggerOutputs = [
             new GraphTrigger({ name: 'exit' })
         ];
-        data.dataInputs = [
+        object.dataInputs = [
             new GraphVariable({ name: 'target', type: 'object', value: null }),
             new GraphVariable({ name: 'member', type: 'string', value: 'variable' }),
             new GraphVariable({ name: 'new value', type: 'mixed', value: '' }),
         ];
-        data.dataOutputs = [
+        object.dataOutputs = [
             new GraphVariable({ name: 'value', type: 'mixed' }),
         ];
-        super(data);
+    }
+
+    get TriggerInputs() {
         let object = this;
+        return object.triggerInputs;
+    }
+
+    get TriggerOutputs() {
+        let object = this;
+        return object.triggerOutputs;
+    }
+
+    get DataInputs() {
+        let object = this;
+        return object.dataInputs;
+    }
+
+    get DataOutputs() {
+        let object = this;
+        return object.dataOutputs;
     }
 
 }
@@ -530,14 +600,24 @@ class GraphNodeFunction extends GraphNode {
     }
 
     constructor(data = {}) {
-        data.dataInputs = [
-            new GraphVariable({ name: 'function', type: 'object', value: null }),
-        ];
-        data.dataOutputs = [
-            new GraphTrigger({ name: 'exit', }),
-        ];
         super(data);
         let object = this;
+        object.dataInputs = [
+            new GraphVariable({ name: 'function', type: 'object', value: null }),
+        ];
+        object.dataOutputs = [
+            new GraphTrigger({ name: 'exit', }),
+        ];
+    }
+
+    get DataInputs() {
+        let object = this;
+        return object.dataInputs;
+    }
+
+    get DataOutputs() {
+        let object = this;
+        return object.dataOutputs;
     }
 
 }
@@ -550,15 +630,35 @@ class GraphNodeMethod extends GraphNode {
     }
 
     constructor(data = {}) {
-        data.dataInputs = [
+        super(data);
+        let object = this;
+        object.dataInputs = [
             new GraphVariable({ name: 'target', type: 'object', value: null }),
             new GraphVariable({ name: 'method', type: 'object', value: null }),
         ];
-        data.dataOutputs = [
+        object.dataOutputs = [
             new GraphTrigger({ name: 'exit', }),
         ];
-        super(data);
+    }
+
+    get TriggerInputs() {
         let object = this;
+        return object.triggerInputs;
+    }
+
+    get TriggerOutputs() {
+        let object = this;
+        return object.triggerOutputs;
+    }
+
+    get DataInputs() {
+        let object = this;
+        return object.dataInputs;
+    }
+
+    get DataOutputs() {
+        let object = this;
+        return object.dataOutputs;
     }
 
 }
@@ -566,14 +666,14 @@ class GraphNodeMethod extends GraphNode {
 class GraphNodeMath extends GraphNode {
 
     constructor(data = {}) {
-        data.dataInputs = [
-            new GraphVariable({ name: '0', type: 'mixed', value: null }),
-        ];
-        data.dataOutputs = [
-            new GraphVariable({ name: 'value', type: 'mixed', value: null }),
-        ];
         super(data);
         let object = this;
+        object.dataInputs = [
+            new GraphVariable({ name: '0', type: 'mixed', value: null }),
+        ];
+        object.dataOutputs = [
+            new GraphVariable({ name: 'value', type: 'mixed', value: null }),
+        ];
     }
 
 }
