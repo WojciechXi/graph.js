@@ -1089,6 +1089,45 @@ class GraphNodeMethod extends GraphNode {
 
 }
 
+class GraphNodeEquals extends GraphNode {
+
+    static {
+        GraphNode.nodes.push(this);
+        GraphNode.types[this.name] = this;
+    }
+
+    constructor(data = {}) {
+        super(data);
+        let object = this;
+        if (!object.dataInputs.length) object.dataInputs = [
+            new GraphVariable({ name: 'a', type: 'mixed', value: null }),
+            new GraphVariable({ name: 'b', type: 'mixed', value: null }),
+        ];
+        if (!object.dataOutputs.length) object.dataOutputs = [
+            new GraphVariable({ name: 'equals', type: 'bool', value: false }),
+        ];
+    }
+
+    toJson() {
+        let json = super.toJson();
+        let object = this;
+        json.dataInputs = object.dataInputs;
+        json.dataOutputs = object.dataOutputs;
+        return json;
+    }
+
+    get DataInputs() {
+        let object = this;
+        return object.dataInputs;
+    }
+
+    get DataOutputs() {
+        let object = this;
+        return object.dataOutputs;
+    }
+
+}
+
 class GraphNodeMath extends GraphNode {
 
     constructor(data = {}) {

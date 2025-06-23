@@ -24,4 +24,18 @@ function B(data={}) {
 return {
 response: '',
 }
+return {
+response: '',
+}
+}
+
+function Function(data={}) {
+	let object = this;
+	let request = data.request;
+if( true ) {
+return {
+response: '',
+}
+} else {
+}
 }
