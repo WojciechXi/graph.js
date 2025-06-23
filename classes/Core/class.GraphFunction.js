@@ -60,6 +60,11 @@ class GraphFunction {
         }
     }
 
+    Run(graphProject) {
+        let object = this;
+        object.graph.Run(graphProject, object);
+    }
+
     toJson() {
         let object = this;
         return {

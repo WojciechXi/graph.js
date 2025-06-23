@@ -33,8 +33,12 @@ class GraphEditor {
 
         let formData = new FormData();
         formData.append('json', json);
-        formData.append('code', object.graphProject.Code);
         xhr.send(formData);
+    }
+
+    Run() {
+        let object = this;
+        object.graphProject.Run();
     }
 
     set Selection(selection) {
@@ -95,6 +99,16 @@ class GraphEditor {
                         overflow: 'auto',
                     },
                     content: [
+                        el({
+                            tag: 'a',
+                            class: ['button'],
+                            content: object.graphProject.graphIndex.name,
+                            event: {
+                                click: function (event) {
+                                    object.Selection = object.graphProject.graphIndex;
+                                },
+                            },
+                        }),
                         el({
                             tag: 'a',
                             class: ['button'],

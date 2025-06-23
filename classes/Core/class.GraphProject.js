@@ -8,6 +8,20 @@ class GraphProject {
         let object = this;
         object.id = data.id ?? guid();
 
+        if (data.graphIndex instanceof GraphFunction) {
+            object.graphIndex = data.graphIndex;
+        } else if (data.graphIndex) {
+            object.graphIndex = GraphFunction.FromJson(data.graphIndex);
+        } else {
+            object.graphIndex = new GraphFunction({
+                name: 'index',
+                graphProject: object,
+                triggerInputs: [
+                    new GraphTrigger({ name: 'enter' }),
+                ],
+            });
+        }
+
         object.graphClasses = [];
         object.graphFunctions = [];
 
@@ -28,23 +42,19 @@ class GraphProject {
         }
     }
 
+    Run() {
+        let object = this;
+        object.graphIndex.Run(object);
+    }
+
     toJson() {
         let object = this;
         return {
             id: object.id,
+            graphIndex: object.graphIndex,
             graphClasses: object.graphClasses,
             graphFunctions: object.graphFunctions,
         };
-    }
-
-    get Code() {
-        let object = this;
-        let parts = [];
-
-        for (let graphFunction of object.graphFunctions) parts.push(graphFunction.Code);
-        for (let graphClass of object.graphClasses) parts.push(graphClass.Code);
-
-        return parts.join(`\n\n`);
     }
 
 }

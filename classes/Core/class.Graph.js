@@ -28,6 +28,17 @@ class Graph {
         return [];
     }
 
+    Run(graphProject) {
+        let object = this;
+        for (let node of object.nodes) {
+            if (node instanceof GraphNodeEnter) {
+                for (let triggerOutput of node.TriggerOutputs) {
+                    return node.Run(graphProject, triggerOutput);
+                }
+            }
+        }
+    }
+
     toJson() {
         let object = this;
         return {
@@ -35,20 +46,6 @@ class Graph {
             nodes: object.nodes,
             connections: object.connections,
         };
-    }
-
-    get Code() {
-        let object = this;
-        let parts = [];
-
-        for (let node of object.nodes) {
-            if (node instanceof GraphNodeEnter) {
-                parts.push(node.GetCode(object));
-                break;
-            }
-        }
-
-        return parts.join(`\n`)
     }
 
     FindConnections(id) {
@@ -421,7 +418,6 @@ class FunctionGraph extends Graph {
         } else {
             object.nodes = data.nodes ?? [
                 new GraphNodeEnter({ caller: object.graphFunction, }),
-                new GraphNodeReturn({ caller: object.graphFunction, })
             ];
         }
 
@@ -492,7 +488,6 @@ class MethodGraph extends Graph {
         } else {
             object.nodes = data.nodes ?? [
                 new GraphNodeEnter({ caller: object.graphMethod, }),
-                new GraphNodeReturn({ caller: object.graphMethod, })
             ];
         }
 

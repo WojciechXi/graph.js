@@ -61,6 +61,10 @@ class GraphNode {
         }
     }
 
+    Run(graphProject, trigger) {
+        let object = this;
+    }
+
     get TriggerInputs() {
         return null;
     }
@@ -264,6 +268,19 @@ class GraphNodeEnter extends GraphNode {
         }
     }
 
+    Run(graphProject, trigger) {
+        let object = this;
+        console.log("Enter");
+
+        for (let connection of object.graph.FindConnections(trigger.id)) {
+            if (connection.input == trigger) {
+                connection.output.graphNode.Run(graphProject, connection.output);
+            } else if (connection.output == trigger) {
+                connection.input.graphNode.Run(graphProject, connection.input);
+            }
+        }
+    }
+
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -396,6 +413,27 @@ class GraphNodeIf extends GraphNode {
         ];
     }
 
+    Run(graphProject, trigger) {
+        let object = this;
+        console.log("Node If");
+
+        let triggerTrue = null;
+        let triggerFalse = null;
+
+        for (let trigger of object.TriggerOutputs) {
+            if (trigger.name == 'true') triggerTrue = trigger;
+            else if (trigger.name == 'false') triggerFalse = trigger;
+        }
+
+        for (let connection of object.graph.FindConnections(triggerTrue.id)) {
+            if (connection.input == triggerTrue) {
+                connection.output.graphNode.Run(graphProject, connection.output);
+            } else if (connection.output == triggerTrue) {
+                connection.input.graphNode.Run(graphProject, connection.input);
+            }
+        }
+    }
+
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -476,6 +514,36 @@ class GraphNodeFor extends GraphNode {
         if (!object.dataOutputs.length) object.dataOutputs = [
             new GraphVariable({ name: 'index', direction: 'output', type: 'int' }),
         ];
+    }
+
+    Run(graphProject, triggerInput) {
+        let object = this;
+
+        let triggerOutputBody = null;
+        let triggerOutputExit = null;
+
+        for (let trigger of object.TriggerOutputs) {
+            if (trigger.name == 'body') triggerOutputBody = trigger;
+            else if (trigger.name == 'exit') triggerOutputExit = trigger;
+        }
+
+        for (let i = 0; i < 10; i++) {
+            for (let connection of object.graph.FindConnections(triggerOutputBody.id)) {
+                if (connection.input == triggerOutputBody) {
+                    connection.output.graphNode.Run(graphProject, connection.output);
+                } else if (connection.output == triggerOutputBody) {
+                    connection.input.graphNode.Run(graphProject, connection.input);
+                }
+            }
+        }
+
+        for (let connection of object.graph.FindConnections(triggerOutputExit.id)) {
+            if (connection.input == triggerOutputExit) {
+                connection.output.graphNode.Run(graphProject, connection.output);
+            } else if (connection.output == triggerOutputExit) {
+                connection.input.graphNode.Run(graphProject, connection.input);
+            }
+        }
     }
 
     toJson() {
@@ -588,6 +656,10 @@ class GraphNodeWhile extends GraphNode {
             new GraphTrigger({ name: 'exit', direction: 'output', }),
             new GraphTrigger({ name: 'body', direction: 'output', }),
         ];
+    }
+
+    Run(graphNode, trigger) {
+        let object = this;
     }
 
     toJson() {
@@ -708,6 +780,25 @@ class GraphNodeSet extends GraphNode {
         if (!object.dataOutputs.length) object.dataOutputs = [
             new GraphVariable({ name: 'value', direction: 'output', type: 'mixed' }),
         ];
+    }
+
+    Run(graphProject, trigger) {
+        let object = this;
+        console.log("Node Set");
+
+        let triggerExit = null;
+
+        for (let trigger of object.TriggerOutputs) {
+            if (trigger.name == 'exit') triggerExit = trigger;
+        }
+
+        for (let connection of object.graph.FindConnections(triggerExit.id)) {
+            if (connection.input == triggerExit) {
+                connection.output.graphNode.Run(graphProject, connection.output);
+            } else if (connection.output == triggerExit) {
+                connection.input.graphNode.Run(graphProject, connection.input);
+            }
+        }
     }
 
     toJson() {
