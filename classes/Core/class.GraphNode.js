@@ -525,6 +525,12 @@ class GraphNodeFor extends GraphNode {
         if (triggerInput.name == 'enter') {
             object.running = true;
 
+            let dataOutputIndex = null;
+
+            for (let data of object.DataOutputs) {
+                if (data.name == 'index') dataOutputIndex = data;
+            }
+
             let triggerOutputBody = null;
             let triggerOutputExit = null;
 
@@ -535,6 +541,8 @@ class GraphNodeFor extends GraphNode {
 
             for (let i = 0; i < 10; i++) {
                 if (!object.running) break;
+                dataOutputIndex.value = i;
+
                 for (let connection of object.graph.FindConnections(triggerOutputBody.id)) {
                     if (connection.input == triggerOutputBody) {
                         connection.output.graphNode.Run(graphProject, connection.output);
