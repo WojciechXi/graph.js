@@ -234,6 +234,15 @@ class GraphNodeEnter extends GraphNode {
         if (data.caller) object.callerId = data.caller.id;
     }
 
+    get Code() {
+        let object = this;
+        let parts = [];
+        object.DataOutputs.forEach(function (dataOutput) {
+            parts.push(`let ${dataOutput.name} = '${dataOutput.value}';`);
+        });
+        return parts.join(`\n`)
+    }
+
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -249,15 +258,6 @@ class GraphNodeEnter extends GraphNode {
     get DataOutputs() {
         let object = this;
         return object.caller ? object.caller.dataInputs : null;
-    }
-
-    get Code() {
-        let object = this;
-        let parts = [];
-        object.DataOutputs.forEach(function (dataOutput) {
-            parts.push(`let ${dataOutput.name} = '${dataOutput.value}';`);
-        });
-        return parts.join(`\n`)
     }
 
 }
@@ -277,6 +277,17 @@ class GraphNodeReturn extends GraphNode {
         if (data.caller) object.callerId = data.caller.id;
     }
 
+    get Code() {
+        let object = this;
+        let parts = [];
+        parts.push(`return {`);
+        object.DataInputs.forEach(function (dataInput) {
+            parts.push(`${dataInput.name}: '${dataInput.value}',`);
+        });
+        parts.push(`}`);
+        return parts.join(`\n`)
+    }
+
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -294,17 +305,6 @@ class GraphNodeReturn extends GraphNode {
         return object.caller ? object.caller.dataOutputs : null;
     }
 
-    get Code() {
-        let object = this;
-        let parts = [];
-        parts.push(`return {`);
-        object.DataInputs.forEach(function (dataInput) {
-            parts.push(`${dataInput.name}: '${dataInput.value}',`);
-        });
-        parts.push(`}`);
-        return parts.join(`\n`)
-    }
-
 }
 
 class GraphNodeBreak extends GraphNode {
@@ -320,6 +320,10 @@ class GraphNodeBreak extends GraphNode {
         if (!object.triggerInputs.length) object.triggerInputs = [new GraphTrigger({ name: 'enter' })];
     }
 
+    get Code() {
+        return `break;`;
+    }
+
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -330,10 +334,6 @@ class GraphNodeBreak extends GraphNode {
     get TriggerInputs() {
         let object = this;
         return object.triggerInputs;
-    }
-
-    get Code() {
-        return `break;`;
     }
 
 }
@@ -358,6 +358,17 @@ class GraphNodeIf extends GraphNode {
         if (!object.dataInputs.length) object.dataInputs = [
             new GraphVariable({ name: 'predicate', type: 'bool', value: false }),
         ];
+    }
+
+    get Code() {
+        let object = this;
+        let parts = [];
+        parts.push(`if( true ) {`);
+
+        parts.push(`} else {`);
+
+        parts.push(`}`);
+        return parts.join(`\n`);
     }
 
     toJson() {
@@ -401,6 +412,15 @@ class GraphNodeSwitch extends GraphNode {
         ];
     }
 
+    get Code() {
+        let object = this;
+        let parts = [];
+        parts.push(`switch('name') {`);
+
+        parts.push(`}`);
+        return parts.join(`\n`);
+    }
+
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -442,6 +462,15 @@ class GraphNodeFor extends GraphNode {
         ];
     }
 
+    get Code() {
+        let object = this;
+        let parts = [];
+        parts.push(`for(let i = 0; i < 10; i++) {`);
+
+        parts.push(`}`);
+        return parts.join(`\n`);
+    }
+
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -470,14 +499,6 @@ class GraphNodeFor extends GraphNode {
     get DataOutputs() {
         let object = this;
         return object.dataOutputs;
-    }
-
-    get Code() {
-        let object = this;
-        let parts = [];
-        parts.push(`for(let i = 0; i < 10; i++) {`);
-        parts.push(`}`);
-        return parts.join(`\n`);
     }
 
 }
@@ -508,6 +529,15 @@ class GraphNodeForEach extends GraphNode {
         ];
     }
 
+    get Code() {
+        let object = this;
+        let parts = [];
+        parts.push(`target.forEach(function(item, index){`);
+
+        parts.push(`});`);
+        return parts.join(`\n`);
+    }
+
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -536,15 +566,6 @@ class GraphNodeForEach extends GraphNode {
     get DataOutputs() {
         let object = this;
         return object.dataOutputs;
-    }
-
-    get Code() {
-        let object = this;
-        let parts = [];
-        parts.push(`target.forEach(function(item, index){`);
-
-        parts.push(`});`);
-        return parts.join(`\n`);
     }
 
 }
@@ -571,6 +592,15 @@ class GraphNodeWhile extends GraphNode {
         ];
     }
 
+    get Code() {
+        let object = this;
+        let parts = [];
+        parts.push(`while( false ) {`);
+
+        parts.push(`}`);
+        return parts.join(`\n`);
+    }
+
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -595,15 +625,6 @@ class GraphNodeWhile extends GraphNode {
         return object.dataInputs;
     }
 
-    get Code() {
-        let object = this;
-        let parts = [];
-        parts.push(`while( false ) {`);
-
-        parts.push(`}`);
-        return parts.join(`\n`);
-    }
-
 }
 
 class GraphNodeThis extends GraphNode {
@@ -621,6 +642,12 @@ class GraphNodeThis extends GraphNode {
         ];
     }
 
+    get Code() {
+        let object = this;
+        let parts = [];
+        return parts.join(`\n`);
+    }
+
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -631,13 +658,6 @@ class GraphNodeThis extends GraphNode {
     get DataOutputs() {
         let object = this;
         return object.dataOutputs;
-    }
-
-    get Code() {
-        let object = this;
-        let parts = [];
-        parts.push(`this`);
-        return parts.join(`\n`);
     }
 
 }
@@ -659,6 +679,12 @@ class GraphNodeGet extends GraphNode {
         if (!object.dataOutputs.length) object.dataOutputs = [
             new GraphVariable({ name: 'value', type: 'mixed' }),
         ];
+    }
+
+    get Code() {
+        let object = this;
+        let parts = [];
+        return parts.join(`\n`);
     }
 
     toJson() {
@@ -705,6 +731,12 @@ class GraphNodeSet extends GraphNode {
         if (!object.dataOutputs.length) object.dataOutputs = [
             new GraphVariable({ name: 'value', type: 'mixed' }),
         ];
+    }
+
+    get Code() {
+        let object = this;
+        let parts = [];
+        return parts.join(`\n`);
     }
 
     toJson() {
@@ -757,6 +789,12 @@ class GraphNodeFunction extends GraphNode {
         ];
     }
 
+    get Code() {
+        let object = this;
+        let parts = [];
+        return parts.join(`\n`);
+    }
+
     toJson() {
         let json = super.toJson();
         let object = this;
@@ -787,13 +825,21 @@ class GraphNodeMethod extends GraphNode {
     constructor(data = {}) {
         super(data);
         let object = this;
+
         if (!object.dataInputs.length) object.dataInputs = [
             new GraphVariable({ name: 'target', type: 'object', value: null }),
             new GraphVariable({ name: 'method', type: 'object', value: null }),
         ];
+
         if (!object.dataOutputs.length) object.dataOutputs = [
             new GraphTrigger({ name: 'exit', }),
         ];
+    }
+
+    get Code() {
+        let object = this;
+        let parts = [];
+        return parts.join(`\n`);
     }
 
     toJson() {

@@ -41,19 +41,19 @@ class Graph {
         let object = this;
         let parts = [];
 
-        let enterNode = null;
-        for (let node of object.nodes) {
-            if (node instanceof GraphNodeEnter) {
-                enterNode = node;
-                break;
-            }
-        }
+        // let enterNode = null;
+        // for (let node of object.nodes) {
+        //     if (node instanceof GraphNodeEnter) {
+        //         enterNode = node;
+        //         break;
+        //     }
+        // }
 
-        parts.push(enterNode.Code);
+        // parts.push(enterNode.Code);
 
-        // object.nodes.forEach(function (node, index) {
-        //     parts.push(node.Code);
-        // });
+        object.nodes.forEach(function (node, index) {
+            parts.push(node.Code);
+        });
         return parts.join(`\n`)
     }
 
@@ -266,6 +266,14 @@ class Graph {
                 contextmenu: function (event) {
                     event.preventDefault();
                     if (event.target == object.Root) {
+                        for (let node of object.nodes) {
+                            if (node.hover) {
+                                let index = object.nodes.indexOf(node);
+                                object.nodes.splice(index, 1);
+                                return object.Render();
+                            }
+                        }
+
                         GraphNode.nodes.forEach(function (graphNodeType, index) {
                             let y = Math.floor(index / 9);
                             let x = index - y * 9;
