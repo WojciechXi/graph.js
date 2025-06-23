@@ -1,7 +1,14 @@
-function Function(data={}) {
+function Funkcja(data = {}) {
 	let object = this;
-	let request = data.request;
-return {
-response: '',
-}
+	object.request = data.request;
+	if (object.request == 'cipqa') {
+		return {
+			response: object.request,
+		}
+	} else {
+		object.request = 'cipqa';
+		return {
+			response: object.request,
+		}
+	}
 }

@@ -7,9 +7,12 @@ class GraphVariable {
     constructor(data = {}) {
         let object = this;
         object.id = data.id ?? guid();
+
         object.name = data.name ?? 'Variable';
         object.type = data.type ?? 'mixed';
         object.value = data.value ?? '';
+
+        object.graphNode = data.graphNode ?? null;
     }
 
     toJson() {

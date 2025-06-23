@@ -10,6 +10,8 @@ class GraphTrigger {
         object.name = data.name ?? 'Trigger';
         object.type = data.type ?? 'mixed';
         object.value = data.value ?? '';
+
+        object.graphNode = data.graphNode ?? null;
     }
 
     toJson() {

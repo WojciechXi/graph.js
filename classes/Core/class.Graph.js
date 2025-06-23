@@ -51,6 +51,51 @@ class Graph {
         return parts.join(`\n`)
     }
 
+    FindConnections(id) {
+        let object = this;
+        let connections = [];
+        for (let connection of object.connections) {
+            if (connection.inputId == id || connection.outputId == id) connections.push(connection);
+        }
+        return connections;
+    }
+
+    FindGraphTrigger(id) {
+        let object = this;
+        for (let node of object.nodes) {
+            if (node.TriggerInputs) {
+                node.TriggerInputs.forEach(function (triggerInput) {
+                    if (triggerInput.id == id) return triggerInput;
+                });
+            }
+
+            if (node.TriggerOutputs) {
+                node.TriggerOutputs.forEach(function (triggerOutput) {
+                    if (triggerOutput.id == id) return triggerOutput;
+                });
+            }
+        }
+        return null;
+    }
+
+    FindGraphVariable(id) {
+        let object = this;
+        for (let node of object.nodes) {
+            if (node.DataInputs) {
+                for (let dataInput of node.DataInputs) {
+                    if (dataInput.id == id) return dataInput;
+                }
+            }
+
+            if (node.DataOutputs) {
+                for (let dataOutput of node.DataOutputs) {
+                    if (dataOutput.id == id) return dataOutput;
+                }
+            }
+        }
+        return null;
+    }
+
     get Root() {
         let object = this;
         return object.root ?? (object.root = el({
