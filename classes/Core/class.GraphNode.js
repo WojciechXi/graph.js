@@ -1122,10 +1122,37 @@ class GraphNodeString extends GraphNode {
     constructor(data = {}) {
         super(data);
         let object = this;
-        object.value = data.value ?? '';
         if (!object.dataOutputs.length) object.dataOutputs = [
-            new GraphVariable({ name: 'value', type: 'string', value: null }),
+            new GraphVariable({ name: 'value', type: 'string', value: '' }),
         ];
+    }
+
+    get Textfield() {
+        let object = this;
+        return object.textfield ?? (object.textfield = new Textfield({
+            h: 20
+        }));
+    }
+
+    Update(canvas, pointer) {
+        super.Update(canvas, pointer);
+        let object = this;
+        object.Textfield.Update(canvas, pointer);
+    }
+
+    Resize(canvas, pointer) {
+        super.Resize(canvas, pointer);
+        let object = this;
+        object.Textfield.x = object.x + 8;
+        object.Textfield.y = object.y + 24;
+        object.Textfield.w = object.RoundRect.w - 16 - 16;
+        object.RoundRect.h += 16;
+    }
+
+    Draw(canvas, offset = {}) {
+        super.Draw(canvas, offset);
+        let object = this;
+        object.Textfield.Draw(canvas, offset);
     }
 
     GetCode(graph) {
@@ -1137,7 +1164,6 @@ class GraphNodeString extends GraphNode {
     toJson() {
         let json = super.toJson();
         let object = this;
-        json.value = object.value;
         json.dataOutputs = object.dataOutputs;
         return json;
     }
