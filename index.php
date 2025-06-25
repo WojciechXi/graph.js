@@ -32,6 +32,8 @@
     <script src="./classes/Core/class.GraphNode.js"></script>
     <script src="./classes/Core/class.GraphConnection.js"></script>
 
+    <script src="./classes/Core/GraphNode/graphNode.ConsoleLog.js"></script>
+
     <script src="./classes/Editor/class.GraphEditorInspector.js"></script>
     <script src="./classes/Editor/class.GraphEditor.js"></script>
 
